@@ -8,20 +8,21 @@
 	import syncRows from '$lib/utils/loadSyncLocalStorage';
 	const columns: TableColumn[] = [
 		// { key: 'id', label: 'ID' },
-		{ key: 'username', label: 'Nama' },
-		{ key: 'email', label: 'Email' },
-		{ key: 'role', label: 'Role' },
-		{ key: 'updatedAt', label: 'Diubah Sejak' },
-		{ key: 'createdAt', label: 'Dibuat Sejak' }
+		{ key: 'title', label: 'Title' },
+		{ key: 'link_cert', label: 'Link Certificate' },
+		{ key: 'name_institution', label: 'Name Institusi' },
+		{ key: 'time_cert', label: 'Time Certificate' },
+		{ key: 'createdAt', label: 'Created At' },
+		{ key: 'updatedAt', label: 'Updated At' }
 	];
 
 	// data from page server
 	export let data: { getData: DataTableRow[] };
 	let rows: DataTableRow[] = data.getData;
 
-	// ambil cache saat mount
+	// Initial load
 	onMount(() => {
-		syncRows(data.getData, rows, 'accountRows');
+		syncRows(data.getData, rows, 'certifRows');
 	});
 
 	// state filter/search
@@ -40,9 +41,7 @@
 		// filter search (nama/email/role)
 		const q = search.toLowerCase();
 		const matchesSearch =
-			row.username.toLowerCase().includes(q) ||
-			row.email.toLowerCase().includes(q) ||
-			row.role.toLowerCase().includes(q);
+			row.title.toLowerCase().includes(q) || row.name_institution.toLowerCase().includes(q);
 
 		// filter month
 		const createdDate = new Date(row.createdAt);
@@ -96,8 +95,7 @@
 
 	async function onConfirm() {
 		if (!selectedRow) return;
-		if (confirmAction === 'update')
-			goto(`/dashboard/access-login/account/form?id=${selectedRow.id}`);
+		if (confirmAction === 'update') goto(`/dashboard/certification/form?id=${selectedRow.id}`);
 		if (confirmAction === 'delete') {
 			try {
 				const formData = new URLSearchParams();
@@ -112,10 +110,10 @@
 					toast.success('Deleted successfully', {
 						duration: 3000
 					});
-				} else toast.error('Gagal menghapus data');
+				} else toast.error('failed to delete data');
 			} catch (err) {
 				console.error(err);
-				toast.error('Terjadi kesalahan koneksi');
+				toast.error('A connection error occurred');
 			}
 		}
 		showConfirm = false;
@@ -127,8 +125,8 @@
 <div class="space-y-4">
 	<Toaster position="top-right" />
 	<div class="flex items-center justify-between">
-		<h1 class="text-xl font-bold">Data Account</h1>
-		<Button onclick={() => goto('/dashboard/access-login/account/form')}>Create New</Button>
+		<h1 class="text-xl font-bold">Data Certification</h1>
+		<Button onclick={() => goto('/dashboard/certification/form')}>Create New</Button>
 	</div>
 	<DataTable
 		{columns}

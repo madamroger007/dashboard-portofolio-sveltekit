@@ -9,14 +9,11 @@
 	} from '$lib/components/ui/tooltip';
 </script>
 
-<form action="?/logout" use:enhance method="POST">
+<form action="/auth/logout" use:enhance method="POST">
 	<TooltipProvider>
 		<Tooltip>
-			<TooltipTrigger
-				type="submit"
-				class="rounded-2 size-4.5 cursor-pointer "
-			>
-				<Logout class="w-6 h-6" />
+			<TooltipTrigger type="submit" class="rounded-2 size-4.5 cursor-pointer ">
+				<Logout class="h-6 w-6" />
 			</TooltipTrigger>
 			<TooltipContent>Logout</TooltipContent>
 		</Tooltip>

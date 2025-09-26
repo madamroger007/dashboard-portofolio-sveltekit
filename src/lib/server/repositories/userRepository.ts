@@ -1,5 +1,5 @@
-import { db } from '$lib/server/db';
-import { users, type User, session } from '$lib/server/db/schema';
+import { db } from '$lib/server/db/client';
+import { users, type User, session } from '$lib/server/db/schemaAuth';
 import { eq } from 'drizzle-orm';
 
 export async function createUserRepository(data: User) {

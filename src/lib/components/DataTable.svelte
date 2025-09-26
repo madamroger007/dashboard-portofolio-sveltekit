@@ -6,7 +6,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
-	// NOTE: beberapa implementasi Select svelte tidak mengekspor SelectValue, jadi kita tidak impor itu
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
 	import SearchInput from '$lib/components/SearchInput.svelte';
 	import { Card, CardContent } from '$lib/components/ui/card';
@@ -34,8 +33,6 @@
 
 	// reactive total pages
 	$: totalPages = Math.max(1, Math.ceil(total / pageSize));
-
-	// menerima event apapun (some Select implementations memberikan string | string[])
 
 	function handleSearch(e: any) {
 		const val = e.target.value;
@@ -66,26 +63,25 @@
 		<!-- Filter & Search -->
 		<div class="flex flex-col items-center justify-between gap-2 md:flex-row">
 			<div class="flex gap-2">
-				<!-- Select Bulan -->
 				<Select type="single" value={month} onValueChange={handleFilterMonth}>
 					<SelectTrigger class="w-[140px]">
 						<span class="text-sm text-muted-foreground">
-							{month ? month : 'Pilih Bulan'}
+							{month ? month : 'Choose Month'}
 						</span>
 					</SelectTrigger>
 					<SelectContent>
-						<SelectItem value="01">Januari</SelectItem>
-						<SelectItem value="02">Februari</SelectItem>
-						<SelectItem value="03">Maret</SelectItem>
+						<SelectItem value="01">January</SelectItem>
+						<SelectItem value="02">February</SelectItem>
+						<SelectItem value="03">March</SelectItem>
 						<SelectItem value="04">April</SelectItem>
-						<SelectItem value="05">Mei</SelectItem>
-						<SelectItem value="06">Juni</SelectItem>
-						<SelectItem value="07">Juli</SelectItem>
-						<SelectItem value="08">Agustus</SelectItem>
+						<SelectItem value="05">May</SelectItem>
+						<SelectItem value="06">June</SelectItem>
+						<SelectItem value="07">July</SelectItem>
+						<SelectItem value="08">August</SelectItem>
 						<SelectItem value="09">September</SelectItem>
-						<SelectItem value="10">Oktober</SelectItem>
+						<SelectItem value="10">October</SelectItem>
 						<SelectItem value="11">November</SelectItem>
-						<SelectItem value="12">Desember</SelectItem>
+						<SelectItem value="12">December</SelectItem>
 					</SelectContent>
 				</Select>
 
@@ -93,7 +89,7 @@
 				<Select type="single" value={year} onValueChange={handleFilterYear}>
 					<SelectTrigger class="w-[140px]">
 						<span class="text-sm text-muted-foreground">
-							{year ? year : 'Pilih Tahun'}
+							{year ? year : 'Choose Year'}
 						</span>
 					</SelectTrigger>
 					<SelectContent>
@@ -104,10 +100,9 @@
 				</Select>
 			</div>
 
-			<!-- Input search: bind value dan dispatch saat input -->
 			<SearchInput
 				value={search}
-				placeholder="Cari data"
+				placeholder="Search data"
 				on:change={(e) => handleSearch({ target: { value: e.detail } })}
 			/>
 		</div>
@@ -151,7 +146,7 @@
 										size="icon"
 										variant="ghost"
 										onclick={() => dispatch('delete', row)}
-										aria-label="Hapus"
+										aria-label="Delete"
 									>
 										<Trash2 class="h-4 w-4 text-red-500" />
 									</Button>
@@ -161,7 +156,7 @@
 					{:else}
 						<tr>
 							<td colspan={columns.length + 1} class="py-6 text-center text-muted-foreground">
-								Tidak ada data
+								Not Found
 							</td>
 						</tr>
 					{/if}
@@ -172,7 +167,7 @@
 		<!-- Pagination -->
 		<div class="flex items-center justify-between pt-2">
 			<span class="text-sm text-muted-foreground">
-				Halaman {page} dari {totalPages}
+				Page {page} From {totalPages}
 			</span>
 			<div class="flex items-center gap-2">
 				<button

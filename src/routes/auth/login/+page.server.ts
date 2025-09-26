@@ -32,6 +32,12 @@ export const actions: Actions = {
 			return fail(400, { message: 'CSRF validation failed' });
 		}
 
-		return authService.loginService(event, username, password);
+		const res = await authService.loginService(event, username, password);
+
+		if (res.status !== 200) {
+			return res;
+		}
+
+		throw redirect(302, '/dashboard');
 	}
 };

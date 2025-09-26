@@ -5,6 +5,7 @@
 	export let form: ActionData;
 	export let data: PageData;
 	const { account, isEdit } = data;
+	
 </script>
 
 <div class="p-4 md:p-8">
