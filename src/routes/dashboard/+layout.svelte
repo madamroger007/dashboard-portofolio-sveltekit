@@ -1,8 +1,7 @@
 <script lang="ts">
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import AppSidebar from '$lib/components/Sidebar.svelte';
-	import ThemeButton from '$lib/components/ThemeButton.svelte';
-	import Logout from '$lib/components/Logout.svelte';
+	import TopBar from '$lib/components/TopBar.svelte';
 	export let children;
 </script>
 
@@ -10,18 +9,7 @@
 	<AppSidebar />
 
 	<main class="min-h-screen w-full bg-background text-foreground">
-		<!-- Topbar -->
-		<div
-			class="flex items-center justify-between space-x-2 border-b bg-sub2-background
-             p-2"
-		>
-			<Sidebar.Trigger />
-			<div class="flex items-center space-x-2">
-				<Logout />
-				<ThemeButton />
-			</div>
-		</div>
-
+		<TopBar />
 		<div class="p-4">
 			{@render children?.()}
 		</div>

@@ -5,7 +5,6 @@
 	import UsersIcon from '@lucide/svelte/icons/users';
 	import InboxIcon from '@lucide/svelte/icons/inbox';
 	import BookCheck from '@lucide/svelte/icons/book-check';
-	import CircleUser from '@lucide/svelte/icons/circle-user';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 
 	type MenuItem = {
@@ -26,7 +25,6 @@
 			icon: UsersIcon,
 			children: [
 				{ title: 'Data Account', url: '/dashboard/access-login/account' },
-				{ title: 'Roles', url: '/dashboard/access-login/roles' }
 			]
 		},
 		{
@@ -57,11 +55,6 @@
 				{ title: 'Skill', url: '/dashboard/skill' },
 				{ title: 'Categories Skill', url: '/dashboard/skill/categories' }
 			]
-		},
-		{
-			title: 'Account Data',
-			icon: CircleUser,
-			children: [{ title: 'Logout', url: '/logout' }]
 		}
 	];
 

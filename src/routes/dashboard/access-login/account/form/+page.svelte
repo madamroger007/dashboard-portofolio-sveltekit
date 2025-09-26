@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types';
 	import { enhance } from '$app/forms';
-	import Button from '$lib/components/ui/button/button.svelte';	
+	import Button from '$lib/components/ui/button/button.svelte';
 	export let form: ActionData;
 	export let data: PageData;
 	const { account, isEdit } = data;
@@ -20,9 +20,12 @@
 	<form
 		use:enhance
 		method="POST"
-		action="?/register"
+		action="?/saveData"
 		class="grid grid-cols-1 gap-6 rounded-2xl bg-[var(--sub-background)] p-6 shadow-md md:grid-cols-2"
 	>
+		{#if isEdit}
+			<input type="hidden" name="id" value={account.id} />
+		{/if}
 		<!-- Username -->
 		<div class="flex flex-col">
 			<label for="username" class="mb-1 text-sm text-muted-foreground">Username</label>
@@ -89,12 +92,8 @@
 				required
 			>
 				<option value="" disabled selected>-- Pilih Role --</option>
-				<option value="Admin" selected={account.role === 'Admin'}>
-					Admin
-				</option>
-				<option value="Management" selected={account.role === 'Management'}>
-					Management
-				</option>
+				<option value="Admin" selected={account.role === 'Admin'}> Admin </option>
+				<option value="Management" selected={account.role === 'Management'}> Management </option>
 				<option value="Staff" selected={account.role === 'Staff'}>Staff</option>
 			</select>
 		</div>
@@ -112,9 +111,7 @@
 
 		<!-- Submit -->
 		<div class="md:col-span-2">
-			<Button
-				type="submit"
-			>
+			<Button type="submit">
 				{isEdit ? 'Update Account' : 'Create Account'}
 			</Button>
 		</div>

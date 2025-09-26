@@ -107,18 +107,18 @@
 			<!-- Input search: bind value dan dispatch saat input -->
 			<SearchInput
 				value={search}
-				placeholder="Cari nama, email, role..."
+				placeholder="Cari data"
 				on:change={(e) => handleSearch({ target: { value: e.detail } })}
 			/>
 		</div>
 
 		<!-- Table (shadcn/ui) -->
-		<div class="rounded-md border">
-			<Table>
+		<div class="overflow-x-auto rounded-md border">
+			<Table class="min-w-full table-auto">
 				<TableHeader>
 					<TableRow>
 						{#each columns as col}
-							<TableHead>{col.label}</TableHead>
+							<TableHead class="whitespace-nowrap">{col.label}</TableHead>
 						{/each}
 						<TableHead class="text-right">Actions</TableHead>
 					</TableRow>
@@ -129,8 +129,14 @@
 						{#each data as row (row.id ?? row)}
 							<TableRow>
 								{#each columns as col}
-									<TableCell>{row[col.key]}</TableCell>
+									<TableCell class="max-w-[180px] px-2 py-1 align-top">
+										<!-- Text truncate dengan tooltip -->
+										<span class="block cursor-text whitespace-normal break-words" title={row[col.key]}>
+											{row[col.key]}
+										</span>
+									</TableCell>
 								{/each}
+
 								<TableCell class="flex items-center justify-end gap-2">
 									<Button
 										size="icon"
@@ -153,7 +159,6 @@
 							</TableRow>
 						{/each}
 					{:else}
-						<!-- fallback jika tidak ada data -->
 						<tr>
 							<td colspan={columns.length + 1} class="py-6 text-center text-muted-foreground">
 								Tidak ada data
