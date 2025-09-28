@@ -16,9 +16,9 @@ export async function getUserAllRepository(): Promise<User[]> {
   return user;
 }
 
-export async function getUserByUsernameRepository(username: string): Promise<User | undefined> {
-  const [user] = await db.select().from(users).where(eq(users.username, username));
-  return user;
+export async function getUserByUsernameRepository(username: string): Promise<User[]> {
+  return await db.select().from(users).where(eq(users.username, username));
+ 
 }
 
 export async function updateUserRepository(id: string, data: Partial<User>) {
@@ -27,9 +27,7 @@ export async function updateUserRepository(id: string, data: Partial<User>) {
 }
 
 export async function deleteUserRepository(id: string): Promise<void> {
-  // hapus semua session user ini
   await db.delete(session).where(eq(session.userId, id));
 
-  // hapus user
   await db.delete(users).where(eq(users.id, id));
 }

@@ -10,9 +10,11 @@
 	const columns: TableColumn[] = [
 		// { key: 'id', label: 'ID' },
 		{ key: 'title', label: 'Title' },
-		{ key: 'link_cert', label: 'Link Certificate' },
 		{ key: 'name_institution', label: 'Name Institusi' },
-		{ key: 'time_cert', label: 'Time Certificate' },
+		{ key: 'description', label: 'Description' },
+		{ key: 'time_start', label: 'Time Start' },
+		{ key: 'time_end', label: 'Time End' },
+		{ key: 'category_name', label: 'Category' },
 		{ key: 'createdAt', label: 'Created At' },
 		{ key: 'updatedAt', label: 'Updated At' }
 	];
@@ -20,8 +22,8 @@
 	const dt = createDataTable(
 		data.getData,
 		'?/delete',
-		'/dashboard/certification/form?id=',
-		'certifRows' // key untuk localStorage
+		'/dashboard/experience/form?id=',
+		'experienceRows' // key untuk localStorage
 	);
 
 	const {
@@ -45,8 +47,8 @@
 <div class="space-y-4">
 	<Toaster position="top-right" />
 	<div class="flex items-center justify-between">
-		<h1 class="text-xl font-bold">Data Certification</h1>
-		<Button onclick={() => goto('/dashboard/certification/form')}>Create New</Button>
+		<h1 class="text-xl font-bold">Data Experience</h1>
+		<Button onclick={() => goto('/dashboard/experience/form')}>Create New</Button>
 	</div>
 
 	<DataTable

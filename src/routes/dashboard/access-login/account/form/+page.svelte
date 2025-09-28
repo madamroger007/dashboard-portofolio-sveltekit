@@ -89,7 +89,7 @@
 			<label for="role" class="mb-1 text-sm text-muted-foreground">Role</label>
 			<select
 				name="role"
-				class="border-b border-border bg-transparent py-2 text-foreground focus:border-primary focus:outline-none"
+				class="border-b border-border text-gray-500 bg-transparent py-2  focus:border-primary focus:outline-none"
 				required
 			>
 				<option value="" disabled selected>-- Pilih Role --</option>

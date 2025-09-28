@@ -9,3 +9,4 @@ export const certifSchema = z.object({
     name_institution: z.string().min(3, 'name institusi min 3 character').max(255, 'Name institusi max 255 character'),
     time_cert: z.coerce.date(),
 });
+ 

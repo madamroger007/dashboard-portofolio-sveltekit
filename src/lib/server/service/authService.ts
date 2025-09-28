@@ -1,9 +1,6 @@
 import { hash, verify } from '@node-rs/argon2';
 import { fail, type RequestEvent } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
 import * as auth from '$lib/server/auth';
-import { db } from '$lib/server/db/client';
-import * as table from '$lib/server/db/schemaAuth';
 import generateId from '$lib/utils/generateId';
 import { createUserRepository, deleteUserRepository, updateUserRepository, getUserByUsernameRepository } from '../repositories/userRepository';
 import { type User } from '$lib/server/db/schemaAuth';
@@ -14,7 +11,7 @@ export async function loginService(event: RequestEvent, username: unknown, passw
         return fail(400, { message: 'Invalid username or password format' });
     }
 
-    const results = await db.select().from(table.users).where(eq(table.users.username, username));
+    const results = await getUserByUsernameRepository(username);
     const existingUser = results.at(0);
 
     if (!existingUser) return fail(400, { message: 'Incorrect username or password' });
@@ -49,12 +46,14 @@ export async function registerService(event: RequestEvent, username: string, pas
 
     try {
         const userExists = await getUserByUsernameRepository(username);
-        if (userExists) {
+        if (userExists.length > 0) {
             return fail(400, {
                 error: true,
                 errors: [{ field: 'username', message: 'Username already exists' }]
             });
         }
+
+        console.log('Account created successfully');
         await createUserRepository({
             id: userId,
             username,
@@ -64,7 +63,6 @@ export async function registerService(event: RequestEvent, username: string, pas
             createdAt: new Date(),
             updatedAt: new Date()
         });
-
         return {
             success: true,
             status: 200,

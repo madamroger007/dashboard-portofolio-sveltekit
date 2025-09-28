@@ -1,6 +1,5 @@
-import { type Certification } from "../db/schema_certification";
 import { deleteCertifRepository, createCertifRepository, updateCertifRepository } from '../repositories/certifRepository';
-import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
+import { fail, type RequestEvent } from '@sveltejs/kit';
 import generateId from '$lib/utils/generateId';
 import type { UpdateCertification, CreateCertification } from "$lib/types/schema";
 export async function createCertifService(event: RequestEvent, data: CreateCertification) {
