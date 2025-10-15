@@ -40,7 +40,8 @@ export const items: MenuItem[] = [
         icon: FlaskConical,
         children: [
             { title: 'Project', url: '/dashboard/project' },
-            { title: 'Categories Project', url: '/dashboard/project/advanced' }
+            { title: 'Icons', url: '/dashboard/project/icons' },
+            { title: 'Categories Project', url: '/dashboard/project/categories' }
         ]
     },
     {

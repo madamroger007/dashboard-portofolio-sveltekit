@@ -13,8 +13,8 @@
 	</h2>
 	<p class="mb-6 text-sm text-muted-foreground md:text-base">
 		{isEdit
-			? 'Update your dashboard certificate information and settings.'
-			: 'Manage your dashboard certificate information and settings.'}
+			? 'Update your dashboard experience information and settings.'
+			: 'Manage your dashboard experience information and settings.'}
 	</p>
 
 	<form

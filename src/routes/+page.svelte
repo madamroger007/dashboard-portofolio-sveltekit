@@ -25,7 +25,7 @@
 		<div class="flex flex-col justify-center gap-4 sm:flex-row">
 			<button
 				on:click={goToDashboard}
-				class="rounded-2xl bg-yellow-400 px-8 py-3 font-semibold text-indigo-900 shadow-lg transition hover:bg-yellow-300"
+				class="cursor-pointer rounded-2xl bg-yellow-400 px-8 py-3 font-semibold text-indigo-900 shadow-lg transition hover:bg-yellow-300"
 			>
 				Masuk Dashboard
 			</button>

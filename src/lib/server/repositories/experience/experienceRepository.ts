@@ -49,8 +49,6 @@ export async function getAllExperienceRepository(): Promise<
         .from(dataExperience)
         .leftJoin(category_experience, eq(dataExperience.category_id, category_experience.id));
 
-    // cast string → Date
-    console.log("🔎 raw result:", result);
     return result.map((row) => ({
         ...row,
         time_start: row.time_start ? new Date(row.time_start) : null,

@@ -56,6 +56,20 @@
 	function nextPage() {
 		if (page < totalPages) dispatch('paginate', page + 1);
 	}
+
+	// helper function
+	function parseContent(value: null) {
+		if (value == null) return '';
+		const text = String(value);
+
+		const urlRegex = /(https?:\/\/[^\s]+)/g;
+		return text.replace(urlRegex, (url) => {
+			if (/\.(jpeg|jpg|gif|png|webp)$/i.test(url)) {
+				return `<img src="${url}" alt="Image" class="inline w-16 h-auto rounded-md" />`;
+			}
+			return `<a href="${url}" target="_blank" rel="noopener" class="text-blue-600 hover:underline">${url}</a>`;
+		});
+	}
 </script>
 
 <Card>
@@ -125,9 +139,8 @@
 							<TableRow>
 								{#each columns as col}
 									<TableCell class="max-w-[180px] px-2 py-1 align-top">
-										<!-- Text truncate dengan tooltip -->
-										<span class="block cursor-text whitespace-normal break-words" title={row[col.key]}>
-											{row[col.key]}
+										<span class="block break-words whitespace-normal" title={row[col.key]}>
+											{@html parseContent(row[col.key])}
 										</span>
 									</TableCell>
 								{/each}
