@@ -4,7 +4,8 @@ import {
 	createProjectRepository,
 	deleteProjectRepository,
 	updateProjectRepository,
-	setProjectIcons
+	addProjectIconsRepository,
+	updateProjectIconsRepository
 } from '$lib/server/repositories/project/projectRepository';
 import type { CreateProject, UpdateProject } from '$lib/types/schema';
 
@@ -41,8 +42,9 @@ export async function createProjectService(event: RequestEvent, data: CreateProj
 			updatedAt: new Date()
 		});
 
+		// 🔹 Tambahkan icon baru (tanpa hapus relasi apapun)
 		if (Array.isArray(iconIds) && iconIds.length > 0) {
-			await setProjectIcons(projectId, iconIds);
+			await addProjectIconsRepository(projectId, iconIds);
 		}
 
 		return makeResponse(true, 'Project created successfully');
@@ -65,9 +67,9 @@ export async function updateProjectService(event: RequestEvent, data: UpdateProj
 
 		await updateProjectRepository(id, projectData);
 
-		// Kosongkan & set ulang relasi icon agar tetap konsisten
+		// 🔹 Tambahkan icon baru tanpa menghapus yang sudah ada
 		if (Array.isArray(iconIds)) {
-			await setProjectIcons(id, iconIds);
+			await updateProjectIconsRepository(id, iconIds);
 		}
 
 		return makeResponse(true, 'Project updated successfully');

@@ -21,8 +21,9 @@ export const category_project = pgTable('category_project', {
 export const projects = pgTable('project', {
     id: text('id').primaryKey(),
     title: varchar('title', { length: 100 }).notNull(),
-    image: text('image').notNull(), // URL Cloudinary
+    url: text('url').notNull(), // URL Cloudinary
     description: text('description').notNull(),
+    publicId: text('publicId').notNull(), // ex: Cloudinary public ID
     category_id: text('category_id')
         .notNull()
         .references(() => category_project.id, { onDelete: 'cascade' }),

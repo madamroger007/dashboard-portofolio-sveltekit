@@ -22,8 +22,7 @@
 	const dt = createDataTable(
 		data.getData,
 		'?/delete',
-		'/dashboard/project/form?id=',
-		'projectRows' // key untuk localStorage
+		'/dashboard/project/form?id='
 	);
 
 	const {

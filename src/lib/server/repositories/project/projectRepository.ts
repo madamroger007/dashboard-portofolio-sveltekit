@@ -6,7 +6,7 @@ import {
     category_project,
     type Project
 } from '$lib/server/db/schema_project';
-import { desc, eq } from 'drizzle-orm';
+import { and, desc, eq, inArray } from 'drizzle-orm';
 
 /* ---------------------------- CREATE PROJECT ---------------------------- */
 export async function createProjectRepository(data: Project) {
@@ -24,19 +24,65 @@ export async function deleteProjectRepository(id: string) {
 }
 
 /* ---------------------------- SET PROJECT ICONS --------------------------- */
-export async function setProjectIcons(projectId: string, iconIds: string[]) {
-    // Hapus semua icon lama
-    await db.delete(project_project_icon).where(eq(project_project_icon.project_id, projectId));
+export async function addProjectIconsRepository(projectId: string, iconIds: string[]) {
+    if (iconIds.length === 0) return;
 
-    // Insert baru
-    if (iconIds.length > 0) {
+    // Ambil semua relasi yang sudah ada
+    const existing = await db
+        .select({ icon_id: project_project_icon.icon_id })
+        .from(project_project_icon)
+        .where(eq(project_project_icon.project_id, projectId));
+
+    const existingIds = existing.map((e) => e.icon_id);
+
+    // Filter hanya yang belum ada
+    const newIcons = iconIds.filter((id) => !existingIds.includes(id));
+
+    // Insert hanya icon baru
+    if (newIcons.length > 0) {
         await db.insert(project_project_icon).values(
-            iconIds.map((iconId) => ({
+            newIcons.map((iconId) => ({
                 project_id: projectId,
                 icon_id: iconId
             }))
         );
     }
+}
+
+export async function updateProjectIconsRepository(projectId: string, iconIds: string[]) {
+	// Ambil semua relasi lama
+	const existing = await db
+		.select({ icon_id: project_project_icon.icon_id })
+		.from(project_project_icon)
+		.where(eq(project_project_icon.project_id, projectId));
+
+	const existingIds = existing.map((e) => e.icon_id);
+
+	// Hitung yang perlu ditambah dan dihapus
+	const toAdd = iconIds.filter((id) => !existingIds.includes(id));
+	const toRemove = existingIds.filter((id) => !iconIds.includes(id));
+
+	// Hapus relasi yang tidak lagi dipilih
+	if (toRemove.length > 0) {
+		await db
+			.delete(project_project_icon)
+			.where(
+				and(
+					eq(project_project_icon.project_id, projectId),
+					inArray(project_project_icon.icon_id, toRemove)
+				)
+			);
+	}
+
+	// Tambahkan relasi baru
+	if (toAdd.length > 0) {
+		await db.insert(project_project_icon).values(
+			toAdd.map((iconId) => ({
+				project_id: projectId,
+				icon_id: iconId
+			}))
+		);
+	}
 }
 
 /* ---------------------------- MAPPING HELPER ----------------------------- */
@@ -48,7 +94,8 @@ function mapProjects(rows: any[]) {
             map.set(r.projectId, {
                 id: r.projectId,
                 title: r.title,
-                image: r.image,
+                url: r.url,
+                publicId: r.publicId,
                 description: r.description,
                 createdAt: r.createdAt,
                 updatedAt: r.updatedAt,
@@ -76,7 +123,8 @@ export async function getAllProjectRepository() {
         .select({
             projectId: projects.id,
             title: projects.title,
-            image: projects.image,
+            publicId: projects.publicId,
+            url: projects.url,
             description: projects.description,
             createdAt: projects.createdAt,
             updatedAt: projects.updatedAt,
@@ -102,16 +150,13 @@ export async function getProjectByIdRepository(id: string) {
         .select({
             projectId: projects.id,
             title: projects.title,
-            image: projects.image,
+            publicId: projects.publicId,
+            url: projects.url,
             description: projects.description,
             createdAt: projects.createdAt,
             updatedAt: projects.updatedAt,
             categoryId: category_project.id,
-            categoryTitle: category_project.title,
-            categorySubtitle: category_project.sub_title,
-            iconId: project_icon.id,
-            iconName: project_icon.name,
-            iconUrl: project_icon.url
+            iconId: project_icon.id
         })
         .from(projects)
         .leftJoin(category_project, eq(projects.category_id, category_project.id))
