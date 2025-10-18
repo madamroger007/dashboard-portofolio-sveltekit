@@ -6,7 +6,7 @@ import generateId from '$lib/utils/generateId';
 async function createAdmin() {
     const username = 'admin';
     const email = 'admin@gmail.com';
-    const password = 'admin123'; // nanti bisa diganti dari dashboard
+    const password = 'Administrator_password_123..##'; // nanti bisa diganti dari dashboard
     const role = 'admin';
 
     // cek apakah sudah ada admin

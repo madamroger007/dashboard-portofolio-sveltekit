@@ -1,9 +1,9 @@
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
-import * as iconsProjectService from '$lib/server/service/project/iconsProjectService';
-import * as iconsProjectRepository from '$lib/server/repositories/project/iconsProjectRepository';
-import { projectIconSchema } from '$lib/validation/project-schema';
-import type { UpdateProjectIcon } from '$lib/types/schema';
+import * as iconsService from '$lib/server/service/iconsService';
+import * as iconsRepository from '$lib/server/repositories/iconsRepository';
+import { IconSchema } from '$lib/validation/icon-schema';
+import type { UpdateIcon } from '$lib/types/schema';
 import { uploadOrKeepImage } from '$lib/utils/fileManagement';
 
 export const load: PageServerLoad = async ({ url }) => {
@@ -12,8 +12,8 @@ export const load: PageServerLoad = async ({ url }) => {
 		return { iconProjects: { id: '', name: '', url: '', publicId: '' }, isEdit: false };
 	}
 
-	const icon = await iconsProjectRepository.getIconProjectByIdRepository(id);
-	if (!icon) throw redirect(404, '/dashboard/project/icons');
+	const icon = await iconsRepository.getIconByIdRepository(id);
+	if (!icon) throw redirect(404, '/dashboard/icons');
 
 	return { iconProjects: icon, isEdit: true };
 };
@@ -25,7 +25,7 @@ export const actions: Actions = {
 		const name = form.get('name') as string;
 		const publicId = form.get('publicId') as string;
 		const file = form.get('image') as File | null;
-		const parsed = projectIconSchema.safeParse({ name, file });
+		const parsed = IconSchema.safeParse({ name, file });
 		if (!parsed.success) {
 			const errors = parsed.error.issues.map((err) => ({
 				field: err.path[0],
@@ -35,12 +35,12 @@ export const actions: Actions = {
 		}
 
 		const existing = id
-			? await iconsProjectRepository.getIconProjectByIdRepository(id)
+			? await iconsRepository.getIconByIdRepository(id)
 			: undefined;
 
 		const { url, publicId: finalPublicId } = await uploadOrKeepImage(file, publicId, existing);
 
-		const data: UpdateProjectIcon = {
+		const data: UpdateIcon = {
 			name: parsed.data.name,
 			publicId: finalPublicId,
 			url: url,
@@ -48,8 +48,8 @@ export const actions: Actions = {
 		};
 
 		const response = id
-			? await iconsProjectService.updateIconProjectService(event, data, id)
-			: await iconsProjectService.createIconProjectService(event, {
+			? await iconsService.updateIconService(event, data, id)
+			: await iconsService.createIconService(event, {
 				...data,
 				createdAt: new Date()
 			});
@@ -58,6 +58,6 @@ export const actions: Actions = {
 			return response;
 		}
 
-		throw redirect(302, '/dashboard/project/icons');
+		throw redirect(302, '/dashboard/icons');
 	}
 };

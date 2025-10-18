@@ -3,7 +3,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import * as projectService from '$lib/server/service/project/projectService';
 import * as projectRepository from '$lib/server/repositories/project/projectRepository';
 import * as categoryProjectRepository from '$lib/server/repositories/project/categoryProjectRepository';
-import * as iconProjectRepository from '$lib/server/repositories/project/iconsProjectRepository';
+import * as iconRepository from '$lib/server/repositories/iconsRepository';
 import { projectSchema } from '$lib/validation/project-schema';
 import type { UpdateProject } from '$lib/types/schema';
 import { uploadOrKeepImage } from '$lib/utils/fileManagement';
@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ url }) => {
 	const id = url.searchParams.get('id');
 
 	const categories = await categoryProjectRepository.getAllCategoryProjectRepository();
-	const icons = await iconProjectRepository.getAllIconProjectRepository();
+	const icons = await iconRepository.getAllIconRepository();
 
 	if (id) {
 		const project = await projectRepository.getProjectByIdRepository(id);

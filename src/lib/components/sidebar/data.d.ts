@@ -1,7 +1,10 @@
 import FlaskConical from '@lucide/svelte/icons/flask-conical';
 import UsersIcon from '@lucide/svelte/icons/users';
 import InboxIcon from '@lucide/svelte/icons/inbox';
+import BookmarkCheck from '@lucide/svelte/icons/bookmark-check';
 import BookCheck from '@lucide/svelte/icons/book-check';
+import Images from '@lucide/svelte/icons/images';
+
 export type MenuItem = {
     title: string;
     url?: string;
@@ -37,12 +40,16 @@ export const items: MenuItem[] = [
     },
     {
         title: 'Project',
-        icon: FlaskConical,
+        icon: BookmarkCheck,
         children: [
             { title: 'Project', url: '/dashboard/project' },
-            { title: 'Icons', url: '/dashboard/project/icons' },
             { title: 'Categories Project', url: '/dashboard/project/categories' }
         ]
+    },
+    {
+        title: 'Icons',
+        icon: Images,
+        url: '/dashboard/icons'
     },
     {
         title: 'Skill',

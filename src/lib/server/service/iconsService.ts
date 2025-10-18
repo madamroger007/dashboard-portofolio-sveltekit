@@ -1,13 +1,13 @@
-import { createIconProjectRepository, updateIconProjectRepository, deleteIconProjectRepository, getIconProjectByIdRepository } from '../../repositories/project/iconsProjectRepository';
+import { createIconRepository, updateIconRepository, deleteIconRepository, getIconByIdRepository } from '../repositories/iconsRepository';
 import { fail, type RequestEvent } from '@sveltejs/kit';
 import generateId from '$lib/utils/generateId';
-import type { CreateProjectIcon, UpdateProjectIcon } from "$lib/types/schema";
+import type { CreateIcon, UpdateIcon } from "$lib/types/schema";
 import { cloudinaryRepository } from '$lib/server/repositories/cloudinaryRepository';
 
-export async function createIconProjectService(event: RequestEvent, data: CreateProjectIcon) {
-    const iconProjectId = generateId();
+export async function createIconService(event: RequestEvent, data: CreateIcon) {
+    const iconId = generateId();
     try {
-        await createIconProjectRepository({ ...data, id: iconProjectId, updatedAt: new Date() });
+        await createIconRepository({ ...data, id: iconId, updatedAt: new Date() });
         return {
             success: true,
             status: 200,
@@ -18,9 +18,9 @@ export async function createIconProjectService(event: RequestEvent, data: Create
     }
 }
 
-export async function updateIconProjectService(event: RequestEvent, data: UpdateProjectIcon, id: string) {
+export async function updateIconService(event: RequestEvent, data: UpdateIcon, id: string) {
     try {
-        await updateIconProjectRepository(id, data);
+        await updateIconRepository(id, data);
 
         return {
             success: true,
@@ -32,14 +32,14 @@ export async function updateIconProjectService(event: RequestEvent, data: Update
     }
 }
 
-export async function deleteIconProjectService(event: RequestEvent, id: string) {
+export async function deleteIconService(event: RequestEvent, id: string) {
     try {
-        const { publicId } = await getIconProjectByIdRepository(id);
+        const { publicId } = await getIconByIdRepository(id);
         if (!publicId) {
             return fail(400, { message: 'Icon not found' })
         }
         await cloudinaryRepository.deleteImage(publicId);
-        await deleteIconProjectRepository(id);
+        await deleteIconRepository(id);
 
         return {
             success: true,

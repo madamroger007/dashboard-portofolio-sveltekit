@@ -1,1 +1,0 @@
-ALTER TABLE "project_icon" ADD COLUMN "public_id" text NOT NULL;

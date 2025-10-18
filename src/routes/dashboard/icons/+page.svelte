@@ -19,7 +19,7 @@
 	const dt = createDataTable(
 		data.getData,
 		'?/delete',
-		'/dashboard/project/icons/form?id=',
+		'/dashboard/icons/form?id=',
 		'iconsProjectRows' // key untuk localStorage
 	);
 
@@ -45,7 +45,7 @@
 	<Toaster position="top-right" />
 	<div class="flex items-center justify-between">
 		<h1 class="text-xl font-bold">Data Project Icons</h1>
-		<Button onclick={() => goto('/dashboard/project/icons/form')}>Create New</Button>
+		<Button onclick={() => goto('/dashboard/icons/form')}>Create New</Button>
 	</div>
 
 	<DataTable

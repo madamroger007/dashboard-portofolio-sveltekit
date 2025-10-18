@@ -1,11 +1,11 @@
 import { db } from '$lib/server/db/client';
 import {
     projects,
-    project_project_icon,
-    project_icon,
+    project_icons,
     category_project,
     type Project
 } from '$lib/server/db/schema_project';
+import { icons } from '$lib/server/db/schema_icons';
 import { and, desc, eq, inArray } from 'drizzle-orm';
 
 /* ---------------------------- CREATE PROJECT ---------------------------- */
@@ -29,9 +29,9 @@ export async function addProjectIconsRepository(projectId: string, iconIds: stri
 
     // Ambil semua relasi yang sudah ada
     const existing = await db
-        .select({ icon_id: project_project_icon.icon_id })
-        .from(project_project_icon)
-        .where(eq(project_project_icon.project_id, projectId));
+        .select({ icon_id: project_icons.icon_id })
+        .from(project_icons)
+        .where(eq(project_icons.project_id, projectId));
 
     const existingIds = existing.map((e) => e.icon_id);
 
@@ -40,7 +40,7 @@ export async function addProjectIconsRepository(projectId: string, iconIds: stri
 
     // Insert hanya icon baru
     if (newIcons.length > 0) {
-        await db.insert(project_project_icon).values(
+        await db.insert(project_icons).values(
             newIcons.map((iconId) => ({
                 project_id: projectId,
                 icon_id: iconId
@@ -52,9 +52,9 @@ export async function addProjectIconsRepository(projectId: string, iconIds: stri
 export async function updateProjectIconsRepository(projectId: string, iconIds: string[]) {
 	// Ambil semua relasi lama
 	const existing = await db
-		.select({ icon_id: project_project_icon.icon_id })
-		.from(project_project_icon)
-		.where(eq(project_project_icon.project_id, projectId));
+		.select({ icon_id: project_icons.icon_id })
+		.from(project_icons)
+		.where(eq(project_icons.project_id, projectId));
 
 	const existingIds = existing.map((e) => e.icon_id);
 
@@ -65,18 +65,18 @@ export async function updateProjectIconsRepository(projectId: string, iconIds: s
 	// Hapus relasi yang tidak lagi dipilih
 	if (toRemove.length > 0) {
 		await db
-			.delete(project_project_icon)
+			.delete(project_icons)
 			.where(
 				and(
-					eq(project_project_icon.project_id, projectId),
-					inArray(project_project_icon.icon_id, toRemove)
+					eq(project_icons.project_id, projectId),
+					inArray(project_icons.icon_id, toRemove)
 				)
 			);
 	}
 
 	// Tambahkan relasi baru
 	if (toAdd.length > 0) {
-		await db.insert(project_project_icon).values(
+		await db.insert(project_icons).values(
 			toAdd.map((iconId) => ({
 				project_id: projectId,
 				icon_id: iconId
@@ -131,14 +131,14 @@ export async function getAllProjectRepository() {
             categoryId: category_project.id,
             categoryTitle: category_project.title,
             categorySubtitle: category_project.sub_title,
-            iconId: project_icon.id,
-            iconName: project_icon.name,
-            iconUrl: project_icon.url
+            iconId: icons.id,
+            iconName: icons.name,
+            iconUrl: icons.url
         })
         .from(projects)
         .leftJoin(category_project, eq(projects.category_id, category_project.id))
-        .leftJoin(project_project_icon, eq(projects.id, project_project_icon.project_id))
-        .leftJoin(project_icon, eq(project_project_icon.icon_id, project_icon.id))
+        .leftJoin(project_icons, eq(projects.id, project_icons.project_id))
+        .leftJoin(icons, eq(project_icons.icon_id, icons.id))
         .orderBy(desc(projects.createdAt));
 
     return mapProjects(rows);
@@ -156,12 +156,12 @@ export async function getProjectByIdRepository(id: string) {
             createdAt: projects.createdAt,
             updatedAt: projects.updatedAt,
             categoryId: category_project.id,
-            iconId: project_icon.id
+            iconId: icons.id
         })
         .from(projects)
         .leftJoin(category_project, eq(projects.category_id, category_project.id))
-        .leftJoin(project_project_icon, eq(projects.id, project_project_icon.project_id))
-        .leftJoin(project_icon, eq(project_project_icon.icon_id, project_icon.id))
+        .leftJoin(project_icons, eq(projects.id, project_icons.project_id))
+        .leftJoin(icons, eq(project_icons.icon_id, icons.id))
         .where(eq(projects.id, id));
 
     return rows.length ? mapProjects(rows)[0] : undefined;

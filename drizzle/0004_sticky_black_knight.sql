@@ -1,1 +1,0 @@
-ALTER TABLE "project_icon" DROP COLUMN "file_name";

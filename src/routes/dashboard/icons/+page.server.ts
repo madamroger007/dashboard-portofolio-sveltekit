@@ -1,9 +1,9 @@
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
-import * as iconProjectService from '$lib/server/service/project/iconsProjectService';
-import * as iconProjectRepository from '$lib/server/repositories/project/iconsProjectRepository';
+import * as iconService from '$lib/server/service/iconsService';
+import * as iconRepository from '$lib/server/repositories/iconsRepository';
 export const load: PageServerLoad = async ({ url }) => {
-  const data = await iconProjectRepository.getAllIconProjectRepository();
+  const data = await iconRepository.getAllIconRepository();
   return { getData: data };
 };
 
@@ -14,10 +14,10 @@ export const actions: Actions = {
     if (!id) {
       return fail(400, { message: 'ID is required' });
     }
-    const response = await iconProjectService.deleteIconProjectService(event, id);
+    const response = await iconService.deleteIconService(event, id);
     if (response.status !== 200) {
       return response;
     }
-    throw redirect(302, '/dashboard/project/icons');
+    throw redirect(302, '/dashboard/icons');
   }
 };
