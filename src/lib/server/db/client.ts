@@ -9,15 +9,12 @@ let dbPg: NodePgDatabase<typeof schema> | NeonHttpDatabase<typeof schema> | null
 async function getDb() {
 	if (dbPg) return dbPg;
 
-	// Ambil env sesuai context
 	let databaseUrl: string | undefined;
 
 	try {
-		// ✅ Kalau dipanggil dari dalam SvelteKit
 		const { env } = await import('$env/dynamic/private');
 		databaseUrl = env.DATABASE_URL;
 	} catch {
-		// ✅ Kalau dipanggil dari script tsx/ts-node
 		databaseUrl = process.env.DATABASE_URL;
 	}
 

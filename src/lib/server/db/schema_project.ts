@@ -1,8 +1,6 @@
 import { pgTable, text, varchar, timestamp, uuid } from 'drizzle-orm/pg-core';
 import { icons } from './schema_icons';
-/**
- * Category Project
- */
+
 export const category_project = pgTable('category_project', {
     id: text('id').primaryKey(),
     title: varchar('title', { length: 100 }).notNull(),
@@ -15,9 +13,6 @@ export const category_project = pgTable('category_project', {
         .defaultNow()
 });
 
-/**
- * Project
- */
 export const projects = pgTable('project', {
     id: text('id').primaryKey(),
     title: varchar('title', { length: 100 }).notNull(),
@@ -35,9 +30,6 @@ export const projects = pgTable('project', {
         .defaultNow()
 });
 
-/**
- * Junction table Many-to-Many: Project ↔ ProjectIcon
- */
 export const project_icons = pgTable('project_icons', {
     project_id: text('project_id')
         .notNull()
@@ -48,9 +40,6 @@ export const project_icons = pgTable('project_icons', {
         .references(() => icons.id, { onDelete: 'cascade' })
 });
 
-/**
- * Types
- */
 export type Project = typeof projects.$inferSelect;
 export type NewProject = typeof projects.$inferInsert;
 

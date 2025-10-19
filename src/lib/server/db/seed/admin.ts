@@ -3,11 +3,12 @@ import { db } from '$lib/server/db/client'; // sesuaikan path db instance
 import { users } from '$lib/server/db/schemaAuth';
 import { hash } from '@node-rs/argon2';
 import generateId from '$lib/utils/generateId';
+
 async function createAdmin() {
-    const username = 'admin';
-    const email = 'admin@gmail.com';
-    const password = 'Administrator_password_123..##'; // nanti bisa diganti dari dashboard
-    const role = 'admin';
+    const username = process.env.ADMIN_USERNAME || 'admin';
+    const email = process.env.ADMIN_EMAIL || 'admin@example.com';
+    const password = process.env.ADMIN_PASSWORD || 'password';
+    const role = process.env.ADMIN_ROLE || 'admin';
 
     // cek apakah sudah ada admin
     const existing = await db.query.users.findFirst({

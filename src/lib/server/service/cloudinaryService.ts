@@ -1,37 +1,63 @@
-import { cloudinaryRepository } from '$lib/server/repositories/cloudinaryRepository';
+import cloudinary from '$lib/utils/cloudinaryClient';
+
+export interface UploadResult {
+	publicId: string;
+	url: string;
+}
 
 export const cloudinaryService = {
-	async addImage(filePath: string) {
-		try {
-			return await cloudinaryRepository.uploadImage(filePath);
-		} catch (err) {
-			console.error('Cloudinary upload error:', err);
-			throw new Error('Failed to upload image');
-		}
+	async uploadImage(filePath: string, folder = 'portfolio'): Promise<UploadResult> {
+		const result = await cloudinary.uploader.upload(filePath, {
+			folder,
+			resource_type: 'image',
+			transformation: [
+				{
+					width: 1920,
+					crop: 'limit',
+					fetch_format: 'auto',
+					quality: 'auto:eco',
+					flags: 'progressive',
+					strip: true
+				}
+			]
+		});
+		return { publicId: result.public_id, url: result.secure_url };
 	},
 
-	async replaceImage(publicId: string, filePath: string) {
-		try {
-
-			if (publicId) {
-				return await cloudinaryRepository.updateImage(publicId, filePath);
-			}
-			return await cloudinaryRepository.uploadImage(filePath);
-		} catch (err) {
-			console.error('Cloudinary replace error:', err);
-			throw new Error('Failed to replace image');
-		}
+	async updateImage(publicId: string, filePath: string): Promise<UploadResult> {
+		const result = await cloudinary.uploader.upload(filePath, {
+			public_id: publicId,
+			overwrite: true,
+			invalidate: true,
+			resource_type: 'image',
+			transformation: [
+				{
+					width: 1920,
+					crop: 'limit',
+					fetch_format: 'auto',
+					quality: 'auto:eco',
+					flags: 'progressive',
+					strip: true
+				}
+			]
+		});
+		return { publicId: result.public_id, url: result.secure_url };
 	},
 
-	async removeImage(publicId: string) {
-		try {
-			if (publicId) await cloudinaryRepository.deleteImage(publicId);
-		} catch (err) {
-			console.error('Cloudinary delete error:', err);
-		}
+	async deleteImage(publicId: string): Promise<void> {
+		await cloudinary.uploader.destroy(publicId);
 	},
 
-	async getAllImages() {
-		return await cloudinaryRepository.listImages();
+	async listImages(folder = 'portfolio') {
+		const result = await cloudinary.search
+			.expression(`folder:${folder}`)
+			.sort_by('created_at', 'desc')
+			.max_results(30)
+			.execute();
+
+		return result.resources.map((r: any) => ({
+			publicId: r.public_id,
+			url: r.secure_url
+		}));
 	}
 };

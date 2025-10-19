@@ -2,7 +2,7 @@ import { createIconRepository, updateIconRepository, deleteIconRepository, getIc
 import { fail, type RequestEvent } from '@sveltejs/kit';
 import generateId from '$lib/utils/generateId';
 import type { CreateIcon, UpdateIcon } from "$lib/types/schema";
-import { cloudinaryRepository } from '$lib/server/repositories/cloudinaryRepository';
+import { cloudinaryService } from '$lib/server/service/cloudinaryService';
 
 export async function createIconService(event: RequestEvent, data: CreateIcon) {
     const iconId = generateId();
@@ -38,7 +38,7 @@ export async function deleteIconService(event: RequestEvent, id: string) {
         if (!publicId) {
             return fail(400, { message: 'Icon not found' })
         }
-        await cloudinaryRepository.deleteImage(publicId);
+        await cloudinaryService.deleteImage(publicId);
         await deleteIconRepository(id);
 
         return {

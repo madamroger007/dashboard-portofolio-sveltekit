@@ -33,7 +33,7 @@
 				type="text"
 				name="title"
 				value={category_project.title}
-				placeholder="Category Experience Title"
+				placeholder="Category Project Title"
 				class="border-b border-border bg-transparent py-2 text-foreground placeholder-gray-500 focus:border-primary focus:outline-none"
 				required
 			/>
@@ -45,7 +45,7 @@
 				type="text"
 				name="sub_title"
 				value={category_project.sub_title}
-				placeholder="Category Experience Sub Title"
+				placeholder="Category Project Sub Title"
 				class="border-b border-border bg-transparent py-2 text-foreground placeholder-gray-500 focus:border-primary focus:outline-none"
 				required
 			/>
@@ -65,7 +65,7 @@
 		<!-- Submit -->
 		<div class="md:col-span-2">
 			<Button type="submit">
-				{isEdit ? 'Update Category Experience' : 'Create Category Experience'}
+				{isEdit ? 'Update Category Project' : 'Create Category Project'}
 			</Button>
 		</div>
 	</form>

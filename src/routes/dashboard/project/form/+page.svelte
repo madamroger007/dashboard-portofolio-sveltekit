@@ -42,7 +42,7 @@
 
 	onMount(() => {
 		if (isEdit && project?.url) {
-			previewUrl = project.url; // tampilkan gambar lama kalau sedang edit
+			previewUrl = project.url; 
 		}
 	});
 </script>

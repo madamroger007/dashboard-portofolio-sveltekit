@@ -15,23 +15,21 @@ const uploadOrKeepImage = async (
 	publicId?: string,
 	existing?: { url: string; publicId: string }
 ) => {
-	// Jika tidak ada file baru
 	if (!file || file.size === 0) {
 		return existing
 			? { url: existing.url, publicId: existing.publicId }
 			: { url: '', publicId: publicId || '' };
 	}
 
-	// Proses upload file baru
 	const tempPath = await writeTempFile(file);
 
 	try {
 		const result = publicId
-			? await cloudinaryService.replaceImage(publicId, tempPath)
-			: await cloudinaryService.addImage(tempPath);
+			? await cloudinaryService.updateImage(publicId, tempPath)
+			: await cloudinaryService.uploadImage(tempPath);
 		return { url: result.url, publicId: result.publicId };
 	} finally {
-		await fs.unlink(tempPath).catch(() => {}); // pastikan file temp dihapus meski error
+		await fs.unlink(tempPath).catch(() => { }); // pastikan file temp dihapus meski error
 	}
 };
 

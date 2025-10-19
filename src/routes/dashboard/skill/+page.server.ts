@@ -4,7 +4,7 @@ import * as projectService from '$lib/server/service/project/projectService';
 import * as projectRepository from '$lib/server/repositories/project/projectRepository';
 export const load: PageServerLoad = async ({ url }) => {
   const data = await projectRepository.getAllProjectRepository();
-  
+ 
   const flattened = data.map((item) => ({
     id: item.id,
     title: item.title,
