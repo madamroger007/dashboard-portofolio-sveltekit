@@ -1,16 +1,13 @@
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
-import * as projectService from '$lib/server/service/project/projectService';
-import * as projectRepository from '$lib/server/repositories/project/projectRepository';
+import * as skillService from '$lib/server/service/skill/skillService';
+import * as skillRepository from '$lib/server/repositories/skill/skillRepository';
 export const load: PageServerLoad = async ({ url }) => {
-  const data = await projectRepository.getAllProjectRepository();
- 
+  const data = await skillRepository.getAllSkillsRepository();
+
   const flattened = data.map((item) => ({
     id: item.id,
     title: item.title,
-    url: item.url,
-    description: item.description,
-    publicId: item.publicId,
     categoryTitle: item.category?.title ?? '-',
     icons: item.icons?.map((i: any) => i.url) ?? [],
     createdAt: new Date(item.createdAt).toLocaleString(),
@@ -26,10 +23,10 @@ export const actions: Actions = {
     if (!id) {
       return fail(400, { message: 'ID is required' });
     }
-    const response = await projectService.deleteProjectService(event, id);
+    const response = await skillService.deleteSkillService(event, id);
     if (response.status !== 200) {
       return response;
     }
-    throw redirect(302, '/dashboard/project');
+    throw redirect(302, '/dashboard/skill');
   }
 };

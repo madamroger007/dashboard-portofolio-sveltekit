@@ -4,17 +4,17 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	export let form: ActionData;
 	export let data: PageData;
-	const { category_experience, isEdit } = data;
+	const { category_skill, isEdit } = data;
 </script>
 
 <div class="p-4 md:p-8">
 	<h2 class="text-lg font-semibold text-foreground md:text-xl">
-		{isEdit ? 'Edit Category Experience' : 'Add New Category Experience'}
+		{isEdit ? 'Edit Category Skill' : 'Add New Category Skill'}
 	</h2>
 	<p class="mb-6 text-sm text-muted-foreground md:text-base">
 		{isEdit
-			? 'Update your dashboard category experience information and settings.'
-			: 'Manage your dashboard category experience information and settings.'}
+			? 'Update your dashboard category skill information and settings.'
+			: 'Manage your dashboard category skill information and settings.'}
 	</p>
 
 	<form
@@ -24,7 +24,7 @@
 		class="grid grid-cols-1 gap-6 rounded-2xl bg-[var(--sub-background)] p-6 shadow-md md:grid-cols-2"
 	>
 		{#if isEdit}
-			<input type="hidden" name="id" value={category_experience.id} />
+			<input type="hidden" name="id" value={category_skill.id} />
 		{/if}
 		<!-- title -->
 		<div class="flex flex-col">
@@ -32,21 +32,8 @@
 			<input
 				type="text"
 				name="title"
-				value={category_experience.title}
-				placeholder="Category Experience Title"
-				class="border-b border-border bg-transparent py-2 text-foreground placeholder-gray-500 focus:border-primary focus:outline-none"
-				required
-			/>
-		</div>
-
-		<!-- link_cert -->
-		<div class="flex flex-col">
-			<label for="sub_title" class="mb-1 text-sm text-muted-foreground">Sub Title</label>
-			<input
-				type="text"
-				name="sub_title"
-				value={category_experience.sub_title}
-				placeholder="Category Experience Sub Title"
+				value={category_skill.title}
+				placeholder="Category Skill Title"
 				class="border-b border-border bg-transparent py-2 text-foreground placeholder-gray-500 focus:border-primary focus:outline-none"
 				required
 			/>
@@ -66,7 +53,7 @@
 		<!-- Submit -->
 		<div class="md:col-span-2">
 			<Button type="submit">
-				{isEdit ? 'Update Category Experience' : 'Create Category Experience'}
+				{isEdit ? 'Update Category Project' : 'Create Category Project'}
 			</Button>
 		</div>
 	</form>

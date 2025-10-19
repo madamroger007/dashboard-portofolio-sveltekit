@@ -9,7 +9,6 @@
 	export let data: { getData: DataTableRow[] };
 	const columns: TableColumn[] = [
 		{ key: 'title', label: 'Title' },
-		{ key: 'sub_title', label: 'Sub Title' },
 		{ key: 'createdAt', label: 'Created At' },
 		{ key: 'updatedAt', label: 'Updated At' }
 	];
@@ -17,8 +16,8 @@
 	const dt = createDataTable(
 		data.getData,
 		'?/delete',
-		'/dashboard/experience/categories/form?id=',
-		'experienceCategoriesRows'
+		'/dashboard/skill/categories/form?id=',
+		'categoriesSkillRows'
 	);
 
 	const {
@@ -42,8 +41,8 @@
 <div class="space-y-4">
 	<Toaster position="top-right" />
 	<div class="flex items-center justify-between">
-		<h1 class="text-xl font-bold">Categories Experience</h1>
-		<Button onclick={() => goto('/dashboard/experience/categories/form')}>Create New</Button>
+		<h1 class="text-xl font-bold">Data Skill Categories</h1>
+		<Button onclick={() => goto('/dashboard/skill/categories/form')}>Create New</Button>
 	</div>
 
 	<DataTable

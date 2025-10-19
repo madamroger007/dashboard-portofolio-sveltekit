@@ -33,7 +33,7 @@
 				type="text"
 				name="title"
 				value={experience.title}
-				placeholder="Certification Title"
+				placeholder="Experience Title"
 				class="border-b border-border bg-transparent py-2 text-foreground placeholder-gray-500 focus:border-primary focus:outline-none"
 				required
 			/>

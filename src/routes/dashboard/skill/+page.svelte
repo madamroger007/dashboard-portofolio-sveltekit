@@ -10,19 +10,16 @@
 	const columns: TableColumn[] = [
 		// { key: 'id', label: 'ID' },
 		{ key: 'title', label: 'Title' },
-		{ key: 'url', label: 'Image' },
-		{ key: 'description', label: 'Description' },
 		{ key: 'categoryTitle', label: 'Category' },
 		{ key: "icons", label: "Icons" },
 		{ key: 'createdAt', label: 'Created At' },
 		{ key: 'updatedAt', label: 'Updated At' }
 	];
-	console.log(data);
 	// State data table
 	const dt = createDataTable(
 		data.getData,
 		'?/delete',
-		'/dashboard/project/form?id='
+		'/dashboard/skill/form?id='
 	);
 
 	const {
@@ -46,8 +43,8 @@
 <div class="space-y-4">
 	<Toaster position="top-right" />
 	<div class="flex items-center justify-between">
-		<h1 class="text-xl font-bold">Data Project</h1>
-		<Button onclick={() => goto('/dashboard/project/form')}>Create New</Button>
+		<h1 class="text-xl font-bold">Data Skill</h1>
+		<Button onclick={() => goto('/dashboard/skill/form')}>Create New</Button>
 	</div>
 
 	<DataTable

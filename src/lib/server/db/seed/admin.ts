@@ -16,7 +16,7 @@ async function createAdmin() {
     });
 
     if (existing) {
-        console.log('⚠️  Admin sudah ada, skip seeding.');
+        console.log('⚠️  Existing admin found, skipping creation.');
         return;
     }
 
@@ -36,13 +36,13 @@ async function createAdmin() {
         role
     });
 
-    console.log('✅ Admin default berhasil dibuat.');
+    console.log('✅ Default admin created successfully.');
 }
 
 createAdmin()
     .then(() => process.exit(0))
     .catch((err) => {
-        console.error('❌ Gagal membuat admin:', err);
+        console.error('❌ Failed to create default admin:', err);
         process.exit(1);
     });
 

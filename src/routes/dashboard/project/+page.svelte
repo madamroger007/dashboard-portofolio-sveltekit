@@ -17,7 +17,7 @@
 		{ key: 'createdAt', label: 'Created At' },
 		{ key: 'updatedAt', label: 'Updated At' }
 	];
-	console.log(data);
+	
 	// State data table
 	const dt = createDataTable(
 		data.getData,
