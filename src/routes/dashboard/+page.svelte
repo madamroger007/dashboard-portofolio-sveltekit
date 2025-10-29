@@ -2,9 +2,7 @@
 	import StatCard from '$lib/components/ui/custom-card/stats-card.svelte';
 </script>
 
-
 <div class="flex min-h-screen ">
-	<!-- Main content -->
 	<main class="flex-1 overflow-y-auto p-6">
 		<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
 			<StatCard title="Experience" value="50.8K" change="+28.4%" icon="💜" positive={true} />

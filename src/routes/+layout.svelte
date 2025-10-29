@@ -14,5 +14,4 @@
 
 		{@render children()}
 	</main>
-	<!-- di sini dashboard layout akan dirender -->
 </div>

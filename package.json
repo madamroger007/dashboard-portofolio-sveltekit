@@ -37,6 +37,7 @@
 		"@tailwindcss/typography": "^0.5.15",
 		"@tailwindcss/vite": "^4.0.0",
 		"@types/bcrypt": "^6.0.0",
+		"@types/jsonwebtoken": "^9.0.10",
 		"@types/node": "^20",
 		"@types/pg": "^8.15.5",
 		"autoprefixer": "^10.4.21",
@@ -74,6 +75,7 @@
 		"@neondatabase/serverless": "^0.10.4",
 		"@node-rs/argon2": "^2.0.2",
 		"cloudinary": "^2.7.0",
+		"jsonwebtoken": "^9.0.2",
 		"mode-watcher": "^1.1.0",
 		"pg": "^8.16.3",
 		"svelte-sonner": "^1.0.5"

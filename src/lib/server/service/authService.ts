@@ -2,8 +2,26 @@ import { hash, verify } from '@node-rs/argon2';
 import { fail, type RequestEvent } from '@sveltejs/kit';
 import * as auth from '$lib/server/auth';
 import generateId from '$lib/utils/generateId';
-import { createUserRepository, deleteUserRepository, updateUserRepository, getUserByUsernameRepository } from '../repositories/userRepository';
+import { createUserRepository, deleteUserRepository, updateUserRepository, getUserByUsernameRepository, getUserByIdRepository, getUserAllRepository, addTokenUsersRepository, getTokenUsersByUserIdRepository } from '../repositories/userRepository';
 import { type User } from '$lib/server/db/schemaAuth';
+
+export async function getAllUsersService() {
+    try {
+        const users = await getUserAllRepository();
+        return users;
+    } catch (error) {
+        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+    }
+}
+
+export async function getUserByIdService(id: string) {
+    try {
+        const user = await getUserByIdRepository(id);
+        return user;
+    } catch (error) {
+        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+    }
+}
 
 
 export async function loginService(event: RequestEvent, username: unknown, password: unknown) {
@@ -53,7 +71,6 @@ export async function registerService(event: RequestEvent, username: string, pas
             });
         }
 
-        console.log('Account created successfully');
         await createUserRepository({
             id: userId,
             username,
@@ -69,22 +86,23 @@ export async function registerService(event: RequestEvent, username: string, pas
             message: 'Account created successfully'
         };
 
-    } catch {
-        return fail(500, { message: 'An error has occurred' });
+    } catch (error) {
+        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
     }
 }
 
 export async function deleteAccountService(event: RequestEvent, id: string) {
     try {
         await deleteUserRepository(id);
-    } catch {
-        return fail(500, { message: 'An error has occurred' });
+        return {
+            success: true,
+            status: 200,
+            message: 'Account deleted successfully'
+        };
+    } catch (error) {
+        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
     }
-    return {
-        success: true,
-        status: 200,
-        message: 'Account deleted successfully'
-    };
+
 }
 
 export async function updateAccountService(
@@ -100,7 +118,6 @@ export async function updateAccountService(
             updatedAt: new Date()
         };
 
-        // hanya update password jika user mengisi password baru
         if (data.password && data.password.trim() !== '') {
             updateData.passwordHash = await hash(data.password, {
                 memoryCost: 19456,
@@ -111,15 +128,46 @@ export async function updateAccountService(
         }
 
         await updateUserRepository(id, updateData);
-    } catch (err) {
-        return fail(500, { message: 'An error has occurred' });
+        return {
+            success: true,
+            status: 200,
+            message: 'Account updated successfully'
+        };
+    } catch (error) {
+        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
     }
+}
 
-    return {
-        success: true,
-        status: 200,
-        message: 'Account updated successfully'
-    };
+export async function createTokenService(event: RequestEvent, id: string) {
+    try {
+        const checkUser = await getTokenUsersByUserIdRepository(id);
+        if (checkUser) {
+            return fail(400, { message: 'Token limit reached. You can only create up to 1 tokens.' });
+        }
+
+        const apiToken = auth.generateApiToken();
+        const hashedToken = await hash(apiToken, {
+            memoryCost: 19456,
+            timeCost: 2,
+            outputLen: 32,
+            parallelism: 1
+        });
+        await addTokenUsersRepository({
+            id: generateId(),
+            userId: id,
+            token: hashedToken,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        });
+        return {
+            success: true,
+            status: 200,
+            message: 'Token created successfully'
+        };
+    }
+    catch (error) {
+        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+    }
 }
 
 function validateUsername(username: unknown): username is string {

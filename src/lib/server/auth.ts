@@ -79,3 +79,9 @@ export function deleteSessionTokenCookie(event: RequestEvent) {
 		path: '/'
 	});
 }
+
+export function generateApiToken() {
+	const bytes = crypto.getRandomValues(new Uint8Array(24));
+	const token = encodeBase64url(bytes);
+	return token;
+}

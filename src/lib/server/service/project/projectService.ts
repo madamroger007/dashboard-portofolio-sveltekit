@@ -6,7 +6,8 @@ import {
 	updateProjectRepository,
 	addProjectIconsRepository,
 	updateProjectIconsRepository,
-	getProjectByIdRepository
+	getProjectByIdRepository,
+	getAllProjectRepository
 } from '$lib/server/repositories/project/projectRepository';
 import type { CreateProject, UpdateProject } from '$lib/types/schema';
 
@@ -35,9 +36,9 @@ export async function createProjectService(event: RequestEvent, data: CreateProj
 			await addProjectIconsRepository(projectId, iconIds);
 		}
 
-		return { success: true, message: 'Project created successfully', status: 200};
-	} catch (err) {
-		return fail(500, { message: err instanceof Error ? err.message : 'An error occurred' });
+		return { success: true, message: 'Project created successfully', status: 200 };
+	} catch (error) {
+		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
 	}
 }
 
@@ -56,8 +57,8 @@ export async function updateProjectService(event: RequestEvent, data: UpdateProj
 		}
 
 		return { success: true, message: 'Project updated successfully', status: 200 };
-	} catch (err) {
-		return fail(500, { message: err instanceof Error ? err.message : 'An error occurred' });
+	} catch (error) {
+		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
 	}
 }
 
@@ -71,7 +72,25 @@ export async function deleteProjectService(event: RequestEvent, id: string) {
 		}
 		await deleteProjectRepository(id);
 		return { success: true, message: 'Project deleted successfully', status: 200 };
-	} catch (err) {
-		return fail(500, { message: err instanceof Error ? err.message : 'An error occurred' });
+	} catch (error) {
+		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+	}
+}
+
+export async function getAllProjectService() {
+	try {
+		const result = await getAllProjectRepository();
+		return result;
+	} catch (error) {
+		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+	}
+}
+
+export async function getProjectByIdService(id: string) {
+	try {
+		const result = await getProjectByIdRepository(id);
+		return result;
+	} catch (error) {
+		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
 	}
 }

@@ -8,7 +8,6 @@
 
 	export let data: { getData: DataTableRow[] };
 	const columns: TableColumn[] = [
-		// { key: 'id', label: 'ID' },
 		{ key: 'title', label: 'Title' },
 		{ key: 'link_cert', label: 'Link Certificate' },
 		{ key: 'name_institution', label: 'Name Institusi' },
@@ -21,7 +20,7 @@
 		data.getData,
 		'?/delete',
 		'/dashboard/certification/form?id=',
-		'certifRows' // key untuk localStorage
+		'certifRows'
 	);
 
 	const {

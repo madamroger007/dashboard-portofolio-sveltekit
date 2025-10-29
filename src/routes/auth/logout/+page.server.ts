@@ -1,4 +1,3 @@
-// src/routes/logout/+page.server.ts
 import * as auth from '$lib/server/auth';
 import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
 

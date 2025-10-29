@@ -12,7 +12,7 @@
 
 	function isActive(url?: string) {
 		if (!url) return false;
-		const current = $page.url.pathname; // gunakan $page, biar reaktif
+		const current = $page.url.pathname;
 		return current === url || current.startsWith(url + '/dashboard');
 	}
 
@@ -79,7 +79,6 @@
 									</div>
 								{/if}
 							{:else}
-								<!-- Menu biasa -->
 								<Sidebar.MenuButton class="py-5 hover:cursor-pointer">
 									{#snippet child({ props })}
 										<a

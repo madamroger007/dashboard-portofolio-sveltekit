@@ -7,6 +7,48 @@ import {
 } from '$lib/server/db/schema_project';
 import { icons } from '$lib/server/db/schema_icons';
 import { and, desc, eq, inArray } from 'drizzle-orm';
+/* ---------------------------- MAPPING HELPER ----------------------------- */
+
+export type MapProjects = {
+    projectId: string;
+    title: string;
+    url: string;
+    publicId: string;
+    description: string;
+    createdAt: Date;
+    updatedAt: Date;
+    categoryId: string | null;
+    categoryTitle?: string | null;
+    categorySubtitle?: string | null;
+    iconId?: string | null;
+    iconName?: string | null;
+    iconUrl?: string | null;
+};
+
+export type ProjectIcon = {
+    id: string;
+    name: string;
+    url: string;
+};
+
+export type ProjectWithIcons = {
+    id: string; 
+    title: string;
+    url: string;
+    publicId: string;
+    description: string;
+    createdAt: Date;
+    updatedAt: Date;
+    category: {
+        id: string | null;
+        title: string | null;
+        subtitle?: string | null;
+    };
+    icons: ProjectIcon[];
+};
+
+export type ProjectWithIconsList = ProjectWithIcons[];
+
 
 /* ---------------------------- CREATE PROJECT ---------------------------- */
 export async function createProjectRepository(data: Project) {
@@ -27,7 +69,6 @@ export async function deleteProjectRepository(id: string) {
 export async function addProjectIconsRepository(projectId: string, iconIds: string[]) {
     if (iconIds.length === 0) return;
 
-    // Ambil semua relasi yang sudah ada
     const existing = await db
         .select({ icon_id: project_icons.icon_id })
         .from(project_icons)
@@ -35,10 +76,9 @@ export async function addProjectIconsRepository(projectId: string, iconIds: stri
 
     const existingIds = existing.map((e) => e.icon_id);
 
-    // Filter hanya yang belum ada
+
     const newIcons = iconIds.filter((id) => !existingIds.includes(id));
 
-    // Insert hanya icon baru
     if (newIcons.length > 0) {
         await db.insert(project_icons).values(
             newIcons.map((iconId) => ({
@@ -50,43 +90,41 @@ export async function addProjectIconsRepository(projectId: string, iconIds: stri
 }
 
 export async function updateProjectIconsRepository(projectId: string, iconIds: string[]) {
-	// Ambil semua relasi lama
-	const existing = await db
-		.select({ icon_id: project_icons.icon_id })
-		.from(project_icons)
-		.where(eq(project_icons.project_id, projectId));
 
-	const existingIds = existing.map((e) => e.icon_id);
+    const existing = await db
+        .select({ icon_id: project_icons.icon_id })
+        .from(project_icons)
+        .where(eq(project_icons.project_id, projectId));
 
-	// Hitung yang perlu ditambah dan dihapus
-	const toAdd = iconIds.filter((id) => !existingIds.includes(id));
-	const toRemove = existingIds.filter((id) => !iconIds.includes(id));
+    const existingIds = existing.map((e) => e.icon_id);
 
-	// Hapus relasi yang tidak lagi dipilih
-	if (toRemove.length > 0) {
-		await db
-			.delete(project_icons)
-			.where(
-				and(
-					eq(project_icons.project_id, projectId),
-					inArray(project_icons.icon_id, toRemove)
-				)
-			);
-	}
+    const toAdd = iconIds.filter((id) => !existingIds.includes(id));
+    const toRemove = existingIds.filter((id) => !iconIds.includes(id));
 
-	// Tambahkan relasi baru
-	if (toAdd.length > 0) {
-		await db.insert(project_icons).values(
-			toAdd.map((iconId) => ({
-				project_id: projectId,
-				icon_id: iconId
-			}))
-		);
-	}
+
+    if (toRemove.length > 0) {
+        await db
+            .delete(project_icons)
+            .where(
+                and(
+                    eq(project_icons.project_id, projectId),
+                    inArray(project_icons.icon_id, toRemove)
+                )
+            );
+    }
+
+    if (toAdd.length > 0) {
+        await db.insert(project_icons).values(
+            toAdd.map((iconId) => ({
+                project_id: projectId,
+                icon_id: iconId
+            }))
+        );
+    }
 }
 
-/* ---------------------------- MAPPING HELPER ----------------------------- */
-function mapProjects(rows: any[]) {
+
+function mapProjects(rows: MapProjects[]) {
     const map = new Map<string, any>();
 
     rows.forEach((r) => {

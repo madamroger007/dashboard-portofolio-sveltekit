@@ -11,8 +11,8 @@ export async function createExperienceService(event: RequestEvent, data: CreateE
             status: 200,
             message: 'Experience created successfully'
         }
-    } catch {
-        return fail(500, { message: 'An error has occurred' });
+    } catch (error) {
+        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
     }
 }
 
@@ -25,8 +25,8 @@ export async function updateExperienceService(event: RequestEvent, data: UpdateE
             status: 200,
             message: 'Experience updated successfully'
         }
-    } catch {
-        return fail(500, { message: 'An error has occurred' });
+    } catch (error) {
+        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
     }
 }
 
@@ -39,7 +39,25 @@ export async function deleteExperienceService(event: RequestEvent, id: string) {
             status: 200,
             message: 'Experience deleted successfully'
         }
-    } catch {
-        return fail(500, { message: 'An error has occurred' });
+    } catch (error) {
+        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+    }
+}
+
+export async function getAllExperienceService() {
+    try {
+        const data = await getAllExperienceRepository();
+        return data;
+    } catch (error) {
+        return fail(500, { message: error });
+    }
+}
+
+export async function getExperienceByIdService(id: string) {
+    try {
+        const data = await getExperienceByIdRepository(id);
+        return data;
+    } catch (error) {
+        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
     }
 }

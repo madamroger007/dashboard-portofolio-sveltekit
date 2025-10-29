@@ -1,9 +1,8 @@
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import * as projectService from '$lib/server/service/project/projectService';
-import * as projectRepository from '$lib/server/repositories/project/projectRepository';
-import * as categoryProjectRepository from '$lib/server/repositories/project/categoryProjectRepository';
-import * as iconRepository from '$lib/server/repositories/iconsRepository';
+import * as categoryProjectService from '$lib/server/service/project/categoryProjectService';
+import * as iconService from '$lib/server/service/iconsService';
 import { projectSchema } from '$lib/validation/project-schema';
 import type { UpdateProject } from '$lib/types/schema';
 import { uploadOrKeepImage } from '$lib/utils/fileManagement';
@@ -12,16 +11,15 @@ import { uploadOrKeepImage } from '$lib/utils/fileManagement';
 export const load: PageServerLoad = async ({ url }) => {
 	const id = url.searchParams.get('id');
 
-	const categories = await categoryProjectRepository.getAllCategoryProjectRepository();
-	const icons = await iconRepository.getAllIconRepository();
+	const categories = await categoryProjectService.getAllCategoryProjectService();
+	const icons = await iconService.getAllIconService();
 
 	if (id) {
-		const project = await projectRepository.getProjectByIdRepository(id);
+		const project = await projectService.getProjectByIdService(id);
 		if (!project) {
 			throw redirect(404, '/dashboard/project');
 		}
 
-		// Pastikan iconIds diambil dari relasi project.icons
 		const iconIds = project.icons ? project.icons.map((icon: any) => icon.id) : [];
 		return {
 			project: {
@@ -65,7 +63,6 @@ export const actions: Actions = {
 		const publicId = formData.get('publicId') as string;
 		const file = formData.get('image') as File | null;
 
-		// ✅ Validasi form
 		const parsed = projectSchema.safeParse(Object.fromEntries(formData));
 		if (!parsed.success) {
 			const errors = parsed.error.issues.map((err) => ({
@@ -75,13 +72,12 @@ export const actions: Actions = {
 			return fail(400, { error: true, errors });
 		}
 
-		// ✅ Ambil data lama kalau edit
-		const existing = id ? await projectRepository.getProjectByIdRepository(id) : undefined;
+		const existing = id ? await projectService.getProjectByIdService(id) : undefined;
 
-		// ✅ Upload / keep image
+
 		const { url, publicId: finalPublicId } = await uploadOrKeepImage(file, publicId, existing);
 
-		// ✅ Gabungkan iconIds ke data
+
 		const data: UpdateProject = {
 			title: parsed.data.title,
 			description: parsed.data.description,
@@ -89,10 +85,9 @@ export const actions: Actions = {
 			publicId: finalPublicId,
 			category_id: parsed.data.category_id,
 			updatedAt: new Date(),
-			iconIds // 👈 penting
+			iconIds
 		};
 
-		// ✅ Jalankan service
 		const response = id
 			? await projectService.updateProjectService(event, data, id)
 			: await projectService.createProjectService(event, { ...data, createdAt: new Date() });

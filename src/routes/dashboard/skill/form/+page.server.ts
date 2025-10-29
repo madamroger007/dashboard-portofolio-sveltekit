@@ -1,22 +1,19 @@
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import * as skillService from '$lib/server/service/skill/skillService';
-import * as skillRepository from '$lib/server/repositories/skill/skillRepository';
-import * as categorySkillRepository from '$lib/server/repositories/skill/categorySkillRepository';
-import * as iconRepository from '$lib/server/repositories/iconsRepository';
+import * as categorySkillService from '$lib/server/service/skill/categorySkillService';
+import * as iconService from '$lib/server/service/iconsService';
 import { skillSchema } from '$lib/validation/skill-schema';
 import type { UpdateSkills } from '$lib/types/schema';
-import { uploadOrKeepImage } from '$lib/utils/fileManagement';
-
 
 export const load: PageServerLoad = async ({ url }) => {
 	const id = url.searchParams.get('id');
 
-	const categories = await categorySkillRepository.getAllCategorySkillRepository();
-	const icons = await iconRepository.getAllIconRepository();
+	const categories = await categorySkillService.getAllCategorySkillsService();
+	const icons = await iconService.getAllIconService();
 
 	if (id) {
-		const skill = await skillRepository.getSkillByIdRepository(id);
+		const skill = await skillService.getSkillByIdService(id);
 		if (!skill) {
 			throw redirect(404, '/dashboard/skill');
 		}

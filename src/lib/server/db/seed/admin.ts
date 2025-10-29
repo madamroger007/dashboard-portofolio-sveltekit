@@ -10,7 +10,6 @@ async function createAdmin() {
     const password = process.env.ADMIN_PASSWORD || 'password';
     const role = process.env.ADMIN_ROLE || 'admin';
 
-    // cek apakah sudah ada admin
     const existing = await db.query.users.findFirst({
         where: (u, { eq }) => eq(u.role, role)
     });
@@ -36,7 +35,6 @@ async function createAdmin() {
         role
     });
 
-    console.log('✅ Default admin created successfully.');
 }
 
 createAdmin()

@@ -1,16 +1,16 @@
 import { z } from 'zod';
 
 export const baseAccountSchema = z.object({
-    username: z.string().min(3, 'Username minimal 3 karakter'),
-    email: z.string().email('Format email tidak valid'),
+    username: z.string().min(3, 'Username minimal 3 characters'),
+    email: z.string().email('Format email not valid'),
     role: z.enum(['Admin', 'Management', 'Staff'])
 });
 
 export const createAccountSchema = baseAccountSchema.extend({
-    password: z.string().min(6, 'Password minimal 6 karakter'),
-    confirmPassword: z.string().min(6, 'Konfirmasi password minimal 6 karakter')
+    password: z.string().min(6, 'Password minimal 6 characters'),
+    confirmPassword: z.string().min(6, 'Confirm password minimal 6 characters')
 }).refine((data) => data.password === data.confirmPassword, {
-    message: 'Password dan Konfirmasi Password harus sama',
+    message: 'Password and Confirm Password must match',
     path: ['confirmPassword']
 });
 
@@ -19,11 +19,10 @@ export const updateAccountSchema = baseAccountSchema.extend({
     confirmPassword: z.string().optional()
 }).refine(
     (data) =>
-        // validasi hanya jika salah satu diisi
         (!data.password && !data.confirmPassword) ||
         data.password === data.confirmPassword,
     {
-        message: 'Password dan Konfirmasi Password harus sama',
+        message: 'Password and Confirm Password must match',
         path: ['confirmPassword']
     }
 );

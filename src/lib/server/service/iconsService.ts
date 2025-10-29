@@ -1,4 +1,4 @@
-import { createIconRepository, updateIconRepository, deleteIconRepository, getIconByIdRepository } from '../repositories/iconsRepository';
+import { createIconRepository, updateIconRepository, deleteIconRepository, getIconByIdRepository, getAllIconRepository } from '../repositories/iconsRepository';
 import { fail, type RequestEvent } from '@sveltejs/kit';
 import generateId from '$lib/utils/generateId';
 import type { CreateIcon, UpdateIcon } from "$lib/types/schema";
@@ -13,9 +13,9 @@ export async function createIconService(event: RequestEvent, data: CreateIcon) {
             status: 200,
             message: 'Icons created successfully'
         }
-    } catch {
-        return fail(500, { message: 'An error has occurred' })
-    }
+	} catch (error) {
+		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+	}
 }
 
 export async function updateIconService(event: RequestEvent, data: UpdateIcon, id: string) {
@@ -27,9 +27,9 @@ export async function updateIconService(event: RequestEvent, data: UpdateIcon, i
             status: 200,
             message: 'Icon updated successfully'
         }
-    } catch {
-        return fail(500, { message: 'An error has occurred' })
-    }
+	} catch (error) {
+		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+	}
 }
 
 export async function deleteIconService(event: RequestEvent, id: string) {
@@ -46,7 +46,25 @@ export async function deleteIconService(event: RequestEvent, id: string) {
             status: 200,
             message: 'Icons deleted successfully'
         }
-    } catch {
-        return fail(500, { message: 'An error has occurred' })
-    }
+	} catch (error) {
+		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+	}
+}
+
+export async function getAllIconService() {
+    try {
+        const icons = await getAllIconRepository();
+        return icons
+	} catch (error) {
+		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+	}
+}
+
+export async function getIconByIdService(id: string) {
+    try {
+        const icon = await getIconByIdRepository(id);
+        return icon
+	} catch (error) {
+		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+	}
 }

@@ -1,14 +1,14 @@
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import * as certifService from '$lib/server/service/certifService';
-import * as certifRepository from '$lib/server/repositories/certifRepository';
 import { certifSchema } from '$lib/validation/certif-schema';
 import type { UpdateCertification } from '$lib/types/schema';
+import { type Certification } from '$lib/server/db/schema_certification';
 export const load: PageServerLoad = async ({ url }) => {
     const id = url.searchParams.get('id');
     if (id) {
-        // ambil dari DB
-        const certification = await certifRepository.getCertifByIdRepository(id);
+        const result = await certifService.getCertifByIdService(id);
+        const certification: Certification | null = result === undefined ? null : result as Certification;
         if (!certification) {
             throw redirect(404, '/dashboard/certification');
         }

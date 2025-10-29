@@ -1,17 +1,16 @@
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import * as experienceService from '$lib/server/service/experience/experientService';
-import * as experienceRepository from '$lib/server/repositories/experience/experienceRepository';
-import * as categoryExperienceRepository from '$lib/server/repositories/experience/categoriesRepository';
+import * as categoryExperienceService from '$lib/server/service/experience/categoriesService';
 import { experienceSchema } from '$lib/validation/experience';
 import type { UpdateExperience } from '$lib/types/schema';
+import { type Experience } from '$lib/server/db/schema_experience';
 export const load: PageServerLoad = async ({ url }) => {
     const id = url.searchParams.get('id');
-    // ambil semua kategori buat select
-    const categories = await categoryExperienceRepository.getAllCategoryExperienceRepository();
+    const categories = await categoryExperienceService.getCategoriesExperienceAllService();
     if (id) {
-        // ambil dari DB
-        const experience = await experienceRepository.getExperienceByIdRepository(id);
+        const result = await experienceService.getExperienceByIdService(id);
+        const experience: Experience | null = result === undefined ? null : result as Experience;
         if (!experience) {
             throw redirect(404, '/dashboard/experience');
         }
@@ -31,7 +30,6 @@ export const actions: Actions = {
         const formData = Object.fromEntries(await event.request.formData());
         const id = formData.id as string | undefined;
 
-        // Validasi form
         const parsed = experienceSchema.safeParse(formData);
         if (!parsed.success) {
             const errors = parsed.error.issues.map((err) => ({
@@ -41,7 +39,6 @@ export const actions: Actions = {
             return fail(400, { error: true, errors });
         }
 
-        // Mapping data sesuai tipe
         const data: UpdateExperience = {
             title: parsed.data.title,
             name_institution: parsed.data.name_institution,
@@ -52,17 +49,14 @@ export const actions: Actions = {
             updatedAt: new Date()
         };
 
-        // Eksekusi aksi (update / create)
         const response = id
             ? await experienceService.updateExperienceService(event, data, id)
             : await experienceService.createExperienceService(event, { ...data, createdAt: new Date(), });
 
-        // Gagal → balikin response
         if (response.status !== 200) {
             return response;
         }
 
-        // Sukses → redirect
         throw redirect(302, '/dashboard/experience');
     }
 };

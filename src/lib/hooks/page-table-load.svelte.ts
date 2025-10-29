@@ -27,14 +27,6 @@ export interface DataTableState {
     onConfirm: () => Promise<void>;
 }
 
-/**
- * createDataTable
- * @param initialRows - default rows
- * @param deleteUrl - endpoint untuk delete
- * @param editUrlPrefix - prefix url untuk edit
- * @param storageKey - optional key untuk localStorage
- * @param fetchServerData - optional function untuk fetch data terbaru dari server
- */
 export function createDataTable(
     initialRows: DataTableRow[],
     deleteUrl: string,
@@ -52,7 +44,6 @@ export function createDataTable(
     const confirmAction = writable<'delete' | 'update' | null>(null);
     const selectedRow = writable<DataTableRow | null>(null);
 
-    // --- Derived ---
     const filteredRows = derived(
         [rows, search, month, year],
         ([$rows, $search, $month, $year]) => {

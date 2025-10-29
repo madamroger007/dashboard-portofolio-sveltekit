@@ -1,10 +1,11 @@
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import * as projectService from '$lib/server/service/project/projectService';
-import * as projectRepository from '$lib/server/repositories/project/projectRepository';
+import { type ProjectWithIcons } from '$lib/server/repositories/project/projectRepository';
 export const load: PageServerLoad = async ({ url }) => {
-  const data = await projectRepository.getAllProjectRepository();
-  
+  const result = await projectService.getAllProjectService();
+  const data = result as ProjectWithIcons[];
+
   const flattened = data.map((item) => ({
     id: item.id,
     title: item.title,

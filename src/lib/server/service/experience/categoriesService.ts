@@ -1,4 +1,4 @@
-import { createCategoryExperienceRepository, deleteCategoryExperienceRepository, updateCategoryExperienceRepository } from '../../repositories/experience/categoriesRepository';
+import { createCategoryExperienceRepository, deleteCategoryExperienceRepository, updateCategoryExperienceRepository, getAllCategoryExperienceRepository, getCategoryExperienceByIdRepository } from '../../repositories/experience/categoriesRepository';
 import { fail, type RequestEvent } from '@sveltejs/kit';
 import generateId from '$lib/utils/generateId';
 import type { CreateCategoryExperience, UpdateCategoryExperience } from "$lib/types/schema";
@@ -11,9 +11,9 @@ export async function createCategoryExperienceService(event: RequestEvent, data:
             status: 200,
             message: 'Experience created successfully'
         }
-    } catch {
-        return fail(500, { message: 'An error has occurred' });
-    }
+	} catch (error) {
+		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+	}
 }
 
 export async function updateCategoryExperienceService(event: RequestEvent, data: UpdateCategoryExperience, id: string) {
@@ -25,9 +25,9 @@ export async function updateCategoryExperienceService(event: RequestEvent, data:
             status: 200,
             message: 'Experience updated successfully'
         }
-    } catch {
-        return fail(500, { message: 'An error has occurred' });
-    }
+	} catch (error) {
+		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+	}
 }
 
 export async function deleteCategoryExperienceService(event: RequestEvent, id: string) {
@@ -39,7 +39,25 @@ export async function deleteCategoryExperienceService(event: RequestEvent, id: s
             status: 200,
             message: 'Experience deleted successfully'
         }
-    } catch {
-        return fail(500, { message: 'An error has occurred' });
-    }
+	} catch (error) {
+		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+	}
+}
+
+export async function getCategoriesExperienceAllService() {
+    try {
+        const categories = await getAllCategoryExperienceRepository();
+        return categories;
+	} catch (error) {
+		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+	}
+}
+
+export async function getCategoryExperienceByIdService( id: string) {
+    try {
+        const category = await getCategoryExperienceByIdRepository(id);
+        return category;
+	} catch (error) {
+		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+	}
 }

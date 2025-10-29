@@ -1,10 +1,10 @@
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import * as skillService from '$lib/server/service/skill/skillService';
-import * as skillRepository from '$lib/server/repositories/skill/skillRepository';
+import { type SkillWithIcons } from '$lib/server/repositories/skill/skillRepository';
 export const load: PageServerLoad = async ({ url }) => {
-  const data = await skillRepository.getAllSkillsRepository();
-
+  const result = await skillService.getAllSkillsService();
+  const data = result as SkillWithIcons[];
   const flattened = data.map((item) => ({
     id: item.id,
     title: item.title,

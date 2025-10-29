@@ -1,18 +1,18 @@
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import * as iconsService from '$lib/server/service/iconsService';
-import * as iconsRepository from '$lib/server/repositories/iconsRepository';
 import { IconSchema } from '$lib/validation/icon-schema';
 import type { UpdateIcon } from '$lib/types/schema';
 import { uploadOrKeepImage } from '$lib/utils/fileManagement';
+import { type Icon } from '$lib/server/db/schema_icons';
 
 export const load: PageServerLoad = async ({ url }) => {
 	const id = url.searchParams.get('id');
 	if (!id) {
 		return { iconProjects: { id: '', name: '', url: '', publicId: '' }, isEdit: false };
 	}
+	const icon = await iconsService.getIconByIdService(id);
 
-	const icon = await iconsRepository.getIconByIdRepository(id);
 	if (!icon) throw redirect(404, '/dashboard/icons');
 
 	return { iconProjects: icon, isEdit: true };
@@ -33,9 +33,11 @@ export const actions: Actions = {
 			}));
 			return fail(400, { error: true, errors });
 		}
-
+		
+		const result = id ? await iconsService.getIconByIdService(id) : undefined;
+		const icon = result as Icon;
 		const existing = id
-			? await iconsRepository.getIconByIdRepository(id)
+			? icon
 			: undefined;
 
 		const { url, publicId: finalPublicId } = await uploadOrKeepImage(file, publicId, existing);

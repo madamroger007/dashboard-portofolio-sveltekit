@@ -1,7 +1,9 @@
-import { deleteCertifRepository, createCertifRepository, updateCertifRepository } from '../repositories/certifRepository';
+import { deleteCertifRepository, createCertifRepository, updateCertifRepository, getCertiAllfRepository, getCertifByIdRepository } from '../repositories/certifRepository';
 import { fail, type RequestEvent } from '@sveltejs/kit';
 import generateId from '$lib/utils/generateId';
 import type { UpdateCertification, CreateCertification } from "$lib/types/schema";
+
+
 export async function createCertifService(event: RequestEvent, data: CreateCertification) {
     const certifId = generateId();
     try {
@@ -11,9 +13,9 @@ export async function createCertifService(event: RequestEvent, data: CreateCerti
             status: 200,
             message: 'Certification created successfully'
         }
-    } catch {
-        return fail(500, { message: 'An error has occurred' });
-    }
+	} catch (error) {
+		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+	}
 }
 
 export async function updateCertifService(event: RequestEvent, data: UpdateCertification, id: string) {
@@ -25,9 +27,9 @@ export async function updateCertifService(event: RequestEvent, data: UpdateCerti
             status: 200,
             message: 'Certification updated successfully'
         }
-    } catch {
-        return fail(500, { message: 'An error has occurred' });
-    }
+	} catch (error) {
+		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+	}
 }
 
 export async function deleteCertifService(event: RequestEvent, id: string) {
@@ -39,7 +41,25 @@ export async function deleteCertifService(event: RequestEvent, id: string) {
             status: 200,
             message: 'Certification deleted successfully'
         }
-    } catch {
-        return fail(500, { message: 'An error has occurred' });
-    }
+	} catch (error) {
+		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+	}
+}
+
+export async function getCertifAllService() {
+    try {
+        const certif = await getCertiAllfRepository();
+        return certif;
+	} catch (error) {
+		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+	}
+}
+
+export async function getCertifByIdService(id: string) {
+    try {
+        const certif = await getCertifByIdRepository(id);
+        return certif;
+	} catch (error) {
+		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+	}
 }

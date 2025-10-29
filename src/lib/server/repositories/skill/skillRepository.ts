@@ -8,6 +8,45 @@ import {
 import { icons } from '$lib/server/db/schema_icons';
 import { and, desc, eq, inArray } from 'drizzle-orm';
 
+/* ---------------------------- MAPPING HELPER ----------------------------- */
+
+export type MapSkills = {
+    skillId: string;
+    title: string;
+    createdAt: Date;
+    updatedAt: Date;
+    categoryId: string | null;
+    categoryTitle?: string | null;
+    categorySubtitle?: string | null;
+    iconId?: string | null;
+    iconName?: string | null;
+    iconUrl?: string | null;
+};
+
+export type SkillIcon = {
+    id: string;
+    name: string;
+    url: string;
+};
+
+export type SkillWithIcons = {
+    id: string;
+    title: string;
+    url: string;
+    publicId: string;
+    description: string;
+    createdAt: Date;
+    updatedAt: Date;
+    category: {
+        id: string | null;
+        title: string | null;
+        subtitle?: string | null;
+    };
+    icons: SkillIcon[];
+};
+
+export type SkillWithIconsList = SkillWithIcons[];
+
 /* ---------------------------- CREATE SKILL ---------------------------- */
 export async function createSkillRepository(data: Skill) {
     await db.insert(skills).values(data);
@@ -27,7 +66,6 @@ export async function deleteSkillRepository(id: string) {
 export async function addSkillIconsRepository(skillId: string, iconIds: string[]) {
     if (iconIds.length === 0) return;
 
-    // Ambil semua relasi yang sudah ada
     const existing = await db
         .select({ icon_id: skill_icons.icon_id })
         .from(skill_icons)
@@ -35,10 +73,8 @@ export async function addSkillIconsRepository(skillId: string, iconIds: string[]
 
     const existingIds = existing.map((e) => e.icon_id);
 
-    // Filter hanya yang belum ada
     const newIcons = iconIds.filter((id) => !existingIds.includes(id));
 
-    // Insert hanya icon baru
     if (newIcons.length > 0) {
         await db.insert(skill_icons).values(
             newIcons.map((iconId) => ({
@@ -50,7 +86,7 @@ export async function addSkillIconsRepository(skillId: string, iconIds: string[]
 }
 
 export async function updateSkillIconsRepository(skillId: string, iconIds: string[]) {
-    // Ambil semua relasi lama
+
     const existing = await db
         .select({ icon_id: skill_icons.icon_id })
         .from(skill_icons)
@@ -58,11 +94,9 @@ export async function updateSkillIconsRepository(skillId: string, iconIds: strin
 
     const existingIds = existing.map((e) => e.icon_id);
 
-    // Hitung yang perlu ditambah dan dihapus
     const toAdd = iconIds.filter((id) => !existingIds.includes(id));
     const toRemove = existingIds.filter((id) => !iconIds.includes(id));
 
-    // Hapus relasi yang tidak lagi dipilih
     if (toRemove.length > 0) {
         await db
             .delete(skill_icons)
@@ -74,7 +108,6 @@ export async function updateSkillIconsRepository(skillId: string, iconIds: strin
             );
     }
 
-    // Tambahkan relasi baru
     if (toAdd.length > 0) {
         await db.insert(skill_icons).values(
             toAdd.map((iconId) => ({
@@ -86,7 +119,7 @@ export async function updateSkillIconsRepository(skillId: string, iconIds: strin
 }
 
 /* ---------------------------- MAPPING HELPER ----------------------------- */
-function mapSkills(rows: any[]) {
+function mapSkills(rows: MapSkills[]) {
     const map = new Map<string, any>();
 
     rows.forEach((r) => {
@@ -94,9 +127,6 @@ function mapSkills(rows: any[]) {
             map.set(r.skillId, {
                 id: r.skillId,
                 title: r.title,
-                url: r.url,
-                publicId: r.publicId,
-                description: r.description,
                 createdAt: r.createdAt,
                 updatedAt: r.updatedAt,
                 category: r.categoryId

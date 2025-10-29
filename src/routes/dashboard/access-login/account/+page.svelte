@@ -9,19 +9,19 @@
 	export let data: { getData: DataTableRow[] };
 
 	const columns: TableColumn[] = [
-		{ key: 'username', label: 'Nama' },
+		{ key: 'username', label: 'Name' },
 		{ key: 'email', label: 'Email' },
 		{ key: 'role', label: 'Role' },
-		{ key: 'updatedAt', label: 'Diubah Sejak' },
-		{ key: 'createdAt', label: 'Dibuat Sejak' }
+		{ key: 'token', label: 'Token API' },
+		{ key: 'updatedAt', label: 'Updated At' },
+		{ key: 'createdAt', label: 'Created At' }
 	];
-	// State data table
+
 	const dt = createDataTable(
 		data.getData,
 		'?/delete',
 		'/dashboard/access-login/account/form?id=',
-		'accountRows', // key untuk localStorage
-	
+		'accountRows'
 	);
 
 	const {
@@ -46,7 +46,12 @@
 	<Toaster position="top-right" />
 	<div class="flex items-center justify-between">
 		<h1 class="text-xl font-bold">Data Account</h1>
-		<Button onclick={() => goto('/dashboard/access-login/account/form')}>Create New</Button>
+		<div class="flex gap-4">
+			<form method="post">
+				<Button type="submit" formaction="?/create_token">New Token API</Button>
+			</form>
+			<Button onclick={() => goto('/dashboard/access-login/account/form')}>Create New</Button>
+		</div>
 	</div>
 
 	<DataTable

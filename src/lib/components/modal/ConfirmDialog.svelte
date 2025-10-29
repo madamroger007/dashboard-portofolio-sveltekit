@@ -18,7 +18,7 @@
 
 	const dispatch = createEventDispatcher();
 	$: if (!open) {
-		dispatch('cancel'); // otomatis trigger cancel saat modal ditutup
+		dispatch('cancel');
 	}
 	function confirm() {
 		dispatch('confirm');

@@ -1,9 +1,8 @@
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import * as iconService from '$lib/server/service/iconsService';
-import * as iconRepository from '$lib/server/repositories/iconsRepository';
 export const load: PageServerLoad = async ({ url }) => {
-  const data = await iconRepository.getAllIconRepository();
+  const data = await iconService.getAllIconService();
   return { getData: data };
 };
 

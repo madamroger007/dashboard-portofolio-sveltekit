@@ -1,4 +1,4 @@
-import { pgTable,  text, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
 	id: text('id').primaryKey(),
@@ -20,7 +20,20 @@ export const session = pgTable('session', {
 	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
 });
 
+export const token_users = pgTable('token_users', {
+	id: text('id').primaryKey(),
+	token: text('token').notNull().unique(),
+	userId: text('users_id')
+		.notNull()
+		.references(() => users.id),
+	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' })
+		.notNull()
+		.defaultNow()
+})
 
 export type Session = typeof session.$inferSelect;
 
 export type User = typeof users.$inferSelect;
+
+export type TokenUser = typeof token_users.$inferSelect

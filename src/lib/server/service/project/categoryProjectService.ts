@@ -13,8 +13,8 @@ export async function createCategoryProjectService(event: RequestEvent, data: Cr
             status: 200,
             message: 'Categories created successfully'
         };
-    } catch {
-        return fail(500, { message: 'An error has occurred' });
+    } catch (error) {
+        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
     }
 
 }
@@ -22,15 +22,15 @@ export async function createCategoryProjectService(event: RequestEvent, data: Cr
 export async function getAllCategoryProjectService() {
     try {
         return await getAllCategoryProjectRepository();
-    } catch {
-        return fail(500, { message: 'An error has occurred' });
+    } catch (error) {
+        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
     }
 }
 export async function getCategoryProjectByIdService(id: string) {
     try {
         return await getCategoryProjectByIdRepository(id);
-    } catch {
-        return fail(500, { message: 'An error has occurred' });
+    } catch (error) {
+        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
     }
 }
 export async function updateCategoryProjectService(event: RequestEvent, id: string, data: Partial<UpdateCategoryProject>) {
@@ -41,8 +41,8 @@ export async function updateCategoryProjectService(event: RequestEvent, id: stri
             status: 200,
             message: 'Categories updated successfully'
         };
-    } catch {
-        return fail(500, { message: 'An error has occurred' });
+    } catch (error) {
+        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
     }
 }
 export async function deleteCategoryProjectService(event: RequestEvent, id: string) {
@@ -53,7 +53,7 @@ export async function deleteCategoryProjectService(event: RequestEvent, id: stri
             status: 200,
             message: 'Categories deleted successfully'
         };
-    } catch {
-        return fail(500, { message: 'An error has occurred' });
+    } catch (error) {
+        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
     }
 }

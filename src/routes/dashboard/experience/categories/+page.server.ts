@@ -1,9 +1,8 @@
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import * as categoryExperienceService from '$lib/server/service/experience/categoriesService';
-import * as categoryExperienceRepository from '$lib/server/repositories/experience/categoriesRepository';
 export const load: PageServerLoad = async ({ url }) => {
-  const data = await categoryExperienceRepository.getAllCategoryExperienceRepository();
+  const data = await categoryExperienceService.getCategoriesExperienceAllService();
   return { getData: data };
 };
 

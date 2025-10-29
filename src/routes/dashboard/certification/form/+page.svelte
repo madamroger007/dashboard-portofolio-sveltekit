@@ -75,7 +75,7 @@
 				id="time_cert"
 				name="time_cert"
 				bind:value={certification.time_cert}
-				placeholder="Pilih tanggal"
+				placeholder="Choose date"
 				class="border-b border-border bg-transparent py-2 text-foreground placeholder-gray-500 focus:border-primary focus:outline-none"
 				required
 			/>

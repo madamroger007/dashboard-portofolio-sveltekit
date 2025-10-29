@@ -4,6 +4,7 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
     const user = requireLogin();
+    
     return { user };
 };
 

@@ -4,7 +4,6 @@
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 </script>
 
-<!-- Topbar -->
 <div
 	class="flex items-center justify-between space-x-2 border-b bg-sub2-background
              p-2"

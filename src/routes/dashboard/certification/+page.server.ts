@@ -1,9 +1,8 @@
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import * as certifService from '$lib/server/service/certifService';
-import * as certifRepository from '$lib/server/repositories/certifRepository';
 export const load: PageServerLoad = async ({ url }) => {
-  const data = await certifRepository.getCertiAllfRepository();
+  const data = await certifService.getCertifAllService();
   return { getData: data };
 };
 
