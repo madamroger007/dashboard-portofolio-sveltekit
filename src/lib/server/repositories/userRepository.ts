@@ -42,10 +42,9 @@ export async function updateUserRepository(id: string, data: Partial<User>) {
 
 export async function deleteUserRepository(id: string): Promise<void> {
   await db.delete(session).where(eq(session.userId, id));
-
+  await db.delete(token_users).where(eq(token_users.userId, id));
   await db.delete(users).where(eq(users.id, id));
 
-  await db.delete(token_users).where(eq(token_users.userId, id));
 }
 
 export async function addTokenUsersRepository(data: TokenUser): Promise<void> {
@@ -53,7 +52,17 @@ export async function addTokenUsersRepository(data: TokenUser): Promise<void> {
 }
 
 export async function getTokenUsersByUserIdRepository(userId: string) {
-    return db.query.token_users.findFirst({
-        where: eq(token_users.userId, userId)
-    });
+  return db.query.token_users.findFirst({
+    where: eq(token_users.userId, userId)
+  });
+}
+
+export async function getTokenUsersByTokenRepository(token: string) {
+  return db.query.token_users.findFirst({
+    where: eq(token_users.token, token)
+  });
+}
+
+export async function updateTokenUsersRepository(id: string, data: Partial<TokenUser>): Promise<void> {
+  await db.update(token_users).set(data).where(eq(token_users.userId, id)).returning();
 }

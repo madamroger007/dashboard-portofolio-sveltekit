@@ -47,9 +47,6 @@
 	<div class="flex items-center justify-between">
 		<h1 class="text-xl font-bold">Data Account</h1>
 		<div class="flex gap-4">
-			<form method="post">
-				<Button type="submit" formaction="?/create_token">New Token API</Button>
-			</form>
 			<Button onclick={() => goto('/dashboard/access-login/account/form')}>Create New</Button>
 		</div>
 	</div>

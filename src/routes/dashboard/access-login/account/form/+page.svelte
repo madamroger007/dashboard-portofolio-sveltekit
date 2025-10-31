@@ -2,10 +2,14 @@
 	import type { ActionData, PageData } from './$types';
 	import { enhance } from '$app/forms';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import * as InputGroup from '$lib/components/ui/input-group/index';
+	import CheckIcon from '@lucide/svelte/icons/check';
+	import CopyIcon from '@lucide/svelte/icons/copy';
+	import { useClipboard } from '$lib/hooks/use-clipboard.svelte';
 	export let form: ActionData;
 	export let data: PageData;
-	const { account, isEdit } = data;
-	
+	const { account, tokens, isEdit } = data;
+	const { copied, copy } = useClipboard();
 </script>
 
 <div class="p-4 md:p-8">
@@ -17,6 +21,44 @@
 			? 'Update your dashboard account information and settings.'
 			: 'Manage your dashboard account information and settings.'}
 	</p>
+
+	{#if isEdit}
+		<div class="grid grid-rows-2 justify-end gap-5 md:flex">
+			<InputGroup.Root class="mb-5">
+				<InputGroup.Input
+					type="password"
+					value={tokens?.token}
+					readonly
+					class="text-muted-foreground"
+				/>
+				<InputGroup.Addon align="inline-end">
+					<InputGroup.Button
+						aria-label="Copy"
+						title="Copy"
+						size="icon-xs"
+						onclick={() => copy(tokens?.token)}
+					>
+						{#if $copied}
+							<CheckIcon class="text-green-500 transition-all duration-200" />
+						{:else}
+							<CopyIcon class="text-muted-foreground transition-all duration-200" />
+						{/if}
+					</InputGroup.Button>
+				</InputGroup.Addon>
+			</InputGroup.Root>
+			<div class="mb-5 flex gap-5">
+				<form method="post">
+					<input type="hidden" name="id" value={account.id} />
+					<Button type="submit" formaction="?/create_token">New Token API</Button>
+				</form>
+
+				<form method="post">
+					<input type="hidden" name="id" value={account.id} />
+					<Button type="submit" formaction="?/update_token">Update Token API</Button>
+				</form>
+			</div>
+		</div>
+	{/if}
 
 	<form
 		use:enhance
@@ -89,7 +131,7 @@
 			<label for="role" class="mb-1 text-sm text-muted-foreground">Role</label>
 			<select
 				name="role"
-				class="border-b border-border text-gray-500 bg-transparent py-2  focus:border-primary focus:outline-none"
+				class="border-b border-border bg-transparent py-2 text-gray-500 focus:border-primary focus:outline-none"
 				required
 			>
 				<option value="" disabled selected>-- Pilih Role --</option>
