@@ -41,8 +41,8 @@
 	}
 
 	onMount(() => {
-		if (isEdit && iconProjects?.url) {
-			previewUrl = iconProjects.url; // tampilkan gambar lama kalau sedang edit
+		if (isEdit && iconProjects.url) {
+			previewUrl = iconProjects.url; 
 		}
 	});
 </script>

@@ -102,9 +102,13 @@
 				class="border-b border-border bg-transparent py-2 text-gray-500 placeholder-gray-500 focus:border-primary focus:outline-none"
 				required
 			>
-				{#each categories as category}
-					<option value={category.id}>{category.title}</option>
-				{/each}
+				{#if Array.isArray(categories)}
+					{#each categories as category}
+						<option value={category.id}>{category.title}</option>
+					{/each}
+				{:else}
+					<option disabled>No categories available</option>
+				{/if}
 			</select>
 		</div>
 		<!-- Error Messages -->

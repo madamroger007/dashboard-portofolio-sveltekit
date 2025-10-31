@@ -42,7 +42,7 @@
 
 	onMount(() => {
 		if (isEdit && project?.url) {
-			previewUrl = project.url; 
+			previewUrl = project.url;
 		}
 	});
 </script>
@@ -148,9 +148,13 @@
 				class="border-b border-border bg-transparent py-2 text-gray-500 placeholder-gray-500 focus:border-primary focus:outline-none"
 				required
 			>
-				{#each categories as category}
-					<option value={category.id}>{category.title}</option>
-				{/each}
+				{#if Array.isArray(categories)}
+					{#each categories as category}
+						<option value={category.id}>{category.title}</option>
+					{/each}
+				{:else}
+					<option disabled>No categories available</option>
+				{/if}
 			</select>
 		</div>
 
@@ -158,20 +162,24 @@
 		<div class="flex flex-col md:col-span-2">
 			<label for="iconIds" class="mb-1 text-sm text-muted-foreground">Icons</label>
 			<div class="flex flex-wrap gap-3">
-				{#each icons as icon}
-					<label
-						class="flex cursor-pointer items-center gap-2 rounded-xl border border-border px-3 py-2 transition hover:border-primary"
-					>
-						<input
-							type="checkbox"
-							name="iconIds"
-							value={icon.id}
-							checked={isEdit && project.iconIds?.includes(icon.id)}
-						/>
-						<img src={icon.url} alt={icon.name} class="h-6 w-6" />
-						<span class="text-sm text-foreground">{icon.name}</span>
-					</label>
-				{/each}
+				{#if Array.isArray(icons)}
+					{#each icons as icon}
+						<label
+							class="flex cursor-pointer items-center gap-2 rounded-xl border border-border px-3 py-2 transition hover:border-primary"
+						>
+							<input
+								type="checkbox"
+								name="iconIds"
+								value={icon.id}
+								checked={isEdit && project.iconIds?.includes(icon.id)}
+							/>
+							<img src={icon.url} alt={icon.name} class="h-6 w-6" />
+							<span class="text-sm text-foreground">{icon.name}</span>
+						</label>
+					{/each}
+				{:else}
+					<p class="text-sm text-muted-foreground">No icons available</p>
+				{/if}
 			</div>
 		</div>
 

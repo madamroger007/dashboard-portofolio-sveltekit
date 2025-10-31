@@ -2,6 +2,7 @@
 	import type { ActionData, PageData } from './$types';
 	import { enhance } from '$app/forms';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import LoadingButton from '$lib/components/ui/button/loading-button.svelte';
 	import * as InputGroup from '$lib/components/ui/input-group/index';
 	import CheckIcon from '@lucide/svelte/icons/check';
 	import CopyIcon from '@lucide/svelte/icons/copy';
@@ -10,6 +11,15 @@
 	export let data: PageData;
 	const { account, tokens, isEdit } = data;
 	const { copied, copy } = useClipboard();
+	let loadingCreate = false;
+	let loadingUpdate = false;
+
+	async function handleSubmit(e: SubmitEvent, type: 'create' | 'update') {
+		if (type === 'create') loadingCreate = true;
+		else loadingUpdate = true;
+		const form = e.target as HTMLFormElement;
+		await form.requestSubmit();
+	}
 </script>
 
 <div class="p-4 md:p-8">
@@ -47,14 +57,26 @@
 				</InputGroup.Addon>
 			</InputGroup.Root>
 			<div class="mb-5 flex gap-5">
-				<form method="post">
+				<form method="post" on:submit={(e) => handleSubmit(e, 'create')}>
 					<input type="hidden" name="id" value={account.id} />
-					<Button type="submit" formaction="?/create_token">New Token API</Button>
+					<LoadingButton
+						type="submit"
+						formaction="?/create_token"
+						loading={loadingCreate}
+						loadingText="Creating..."
+						text="New Token API"
+					/>
 				</form>
 
-				<form method="post">
+				<form method="post" on:submit={(e) => handleSubmit(e, 'update')}>
 					<input type="hidden" name="id" value={account.id} />
-					<Button type="submit" formaction="?/update_token">Update Token API</Button>
+					<LoadingButton
+						type="submit"
+						formaction="?/update_token"
+						loading={loadingUpdate}
+						loadingText="Updating..."
+						text="Update Token API"
+					/>
 				</form>
 			</div>
 		</div>

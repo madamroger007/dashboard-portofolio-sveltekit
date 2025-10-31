@@ -11,5 +11,8 @@ export default defineConfig({
 			project: './project.inlang',
 			outdir: './src/lib/paraglide'
 		})
-	]
+	],
+	define: {
+		'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+	}
 });

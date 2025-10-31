@@ -4,6 +4,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
+		"check:deps": "depcheck",
 		"dev": "dotenv -e .env.development vite dev",
 		"build": "vite build",
 		"preview": "vite preview",

@@ -11,11 +11,12 @@ export const load: PageServerLoad = async ({ url }) => {
 	if (!id) {
 		return { iconProjects: { id: '', name: '', url: '', publicId: '' }, isEdit: false };
 	}
-	const icon = await iconsService.getIconByIdService(id);
+	const result = await iconsService.getIconByIdService(id);
+	const icon = result as Icon;
 
 	if (!icon) throw redirect(404, '/dashboard/icons');
 
-	return { iconProjects: icon, isEdit: true };
+	return { iconProjects: { id: icon.id, name: icon.name, url: icon.url, publicId: icon.publicId }, isEdit: true };
 };
 
 export const actions: Actions = {
