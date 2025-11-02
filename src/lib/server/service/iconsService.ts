@@ -13,9 +13,9 @@ export async function createIconService(event: RequestEvent, data: CreateIcon) {
             status: 200,
             message: 'Icons created successfully'
         }
-	} catch (error) {
-		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
-	}
+    } catch (error) {
+        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+    }
 }
 
 export async function updateIconService(event: RequestEvent, data: UpdateIcon, id: string) {
@@ -27,18 +27,18 @@ export async function updateIconService(event: RequestEvent, data: UpdateIcon, i
             status: 200,
             message: 'Icon updated successfully'
         }
-	} catch (error) {
-		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
-	}
+    } catch (error) {
+        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+    }
 }
 
 export async function deleteIconService(event: RequestEvent, id: string) {
     try {
-        const { publicId } = await getIconByIdRepository(id);
-        if (!publicId) {
+        const data = await getIconByIdRepository(id);
+        if (!data?.publicId) {
             return fail(400, { message: 'Icon not found' })
         }
-        await cloudinaryService.deleteImage(publicId);
+        await cloudinaryService.deleteImage(data.publicId);
         await deleteIconRepository(id);
 
         return {
@@ -46,25 +46,25 @@ export async function deleteIconService(event: RequestEvent, id: string) {
             status: 200,
             message: 'Icons deleted successfully'
         }
-	} catch (error) {
-		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
-	}
+    } catch (error) {
+        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+    }
 }
 
 export async function getAllIconService() {
     try {
         const icons = await getAllIconRepository();
         return icons
-	} catch (error) {
-		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
-	}
+    } catch (error) {
+        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+    }
 }
 
 export async function getIconByIdService(id: string) {
     try {
         const icon = await getIconByIdRepository(id);
         return icon
-	} catch (error) {
-		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
-	}
+    } catch (error) {
+        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+    }
 }

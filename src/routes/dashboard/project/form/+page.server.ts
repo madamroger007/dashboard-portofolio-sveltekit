@@ -16,6 +16,7 @@ export const load: PageServerLoad = async ({ url }) => {
 
 	if (id) {
 		const project = await projectService.getProjectByIdService(id);
+		console.log(project);
 		if (!project) {
 			throw redirect(404, '/dashboard/project');
 		}
@@ -25,9 +26,9 @@ export const load: PageServerLoad = async ({ url }) => {
 			project: {
 				projectId: project.id,
 				title: project.title,
-				image: project.image,
+				image: project.url,
 				description: project.description,
-				categoryId: project.categoryId,
+				categoryId: project.category?.id,
 				publicId: project.publicId,
 				url: project.url,
 				iconIds

@@ -49,12 +49,12 @@
 
 <div class="p-4 md:p-8">
 	<h2 class="text-lg font-semibold text-foreground md:text-xl">
-		{isEdit ? 'Edit Icon Project' : 'Add New Icon Project'}
+		{isEdit ? 'Edit Project' : 'Add New Project'}
 	</h2>
 	<p class="mb-6 text-sm text-muted-foreground md:text-base">
 		{isEdit
-			? 'Update your dashboard icon project information and settings.'
-			: 'Manage your dashboard icon project information and settings.'}
+			? 'Update your dashboard project information and settings.'
+			: 'Manage your dashboard project information and settings.'}
 	</p>
 
 	<form
@@ -197,7 +197,7 @@
 		<!-- Submit -->
 		<div class="md:col-span-2">
 			<Button type="submit">
-				{isEdit ? 'Update Icon' : 'Create Icon'}
+				{isEdit ? 'Update Project' : 'Create Project'}
 			</Button>
 		</div>
 	</form>

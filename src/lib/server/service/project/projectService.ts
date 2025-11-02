@@ -65,10 +65,10 @@ export async function updateProjectService(event: RequestEvent, data: UpdateProj
 export async function deleteProjectService(event: RequestEvent, id: string) {
 	try {
 		if (!id) throw new Error('Project ID is required');
-		const { publicId } = await getProjectByIdRepository(id);
-		if (publicId) {
+		const data = await getProjectByIdRepository(id);
+		if (data?.publicId) {
 			const { cloudinaryService } = await import('$lib/server/service/cloudinaryService');
-			await cloudinaryService.deleteImage(publicId);
+			await cloudinaryService.deleteImage(data.publicId);
 		}
 		await deleteProjectRepository(id);
 		return { success: true, message: 'Project deleted successfully', status: 200 };
@@ -91,6 +91,6 @@ export async function getProjectByIdService(id: string) {
 		const result = await getProjectByIdRepository(id);
 		return result;
 	} catch (error) {
-		return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
+		throw new Error(error instanceof Error ? error.message : 'An unknown error occurred');
 	}
 }

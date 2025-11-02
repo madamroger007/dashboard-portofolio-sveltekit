@@ -76,6 +76,7 @@
 		"@neondatabase/serverless": "^0.10.4",
 		"@node-rs/argon2": "^2.0.2",
 		"cloudinary": "^2.7.0",
+		"ioredis": "^5.8.2",
 		"jsonwebtoken": "^9.0.2",
 		"mode-watcher": "^1.1.0",
 		"pg": "^8.16.3",

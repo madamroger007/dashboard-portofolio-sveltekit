@@ -7,6 +7,7 @@ import {
 } from '$lib/server/db/schema_skill';
 import { icons } from '$lib/server/db/schema_icons';
 import { and, desc, eq, inArray } from 'drizzle-orm';
+import { getCache, setCache, delCache } from "$lib/server/repositories/redisRepository";
 
 /* ---------------------------- MAPPING HELPER ----------------------------- */
 
@@ -50,16 +51,21 @@ export type SkillWithIconsList = SkillWithIcons[];
 /* ---------------------------- CREATE SKILL ---------------------------- */
 export async function createSkillRepository(data: Skill) {
     await db.insert(skills).values(data);
+    await delCache("skills:all");
 }
 
 /* ---------------------------- UPDATE SKILL ---------------------------- */
 export async function updateSkillRepository(id: string, data: Partial<Skill>) {
     await db.update(skills).set(data).where(eq(skills.id, id));
+    await delCache(`skills:${id}`);
+    await delCache("skills:all");
 }
 
 /* ---------------------------- DELETE SKILL ---------------------------- */
 export async function deleteSkillRepository(id: string) {
     await db.delete(skills).where(eq(skills.id, id));
+    await delCache(`skills:${id}`);
+    await delCache("skills:all");
 }
 
 /* ---------------------------- SET SKILL ICONS --------------------------- */
@@ -83,6 +89,9 @@ export async function addSkillIconsRepository(skillId: string, iconIds: string[]
             }))
         );
     }
+
+    await delCache(`skills:${skillId}`);
+    await delCache("skills:all");
 }
 
 export async function updateSkillIconsRepository(skillId: string, iconIds: string[]) {
@@ -116,6 +125,9 @@ export async function updateSkillIconsRepository(skillId: string, iconIds: strin
             }))
         );
     }
+
+    await delCache(`skills:${skillId}`);
+    await delCache("skills:all");
 }
 
 /* ---------------------------- MAPPING HELPER ----------------------------- */
@@ -149,6 +161,10 @@ function mapSkills(rows: MapSkills[]) {
 
 /* ---------------------------- GET ALL SKILLS ---------------------------- */
 export async function getAllSkillsRepository() {
+    const cacheKey = "skills:all";
+    const cached = await getCache<SkillWithIconsList>(cacheKey);
+    if (cached) return cached;
+
     const rows = await db
         .select({
             skillId: skills.id,
@@ -167,11 +183,15 @@ export async function getAllSkillsRepository() {
         .leftJoin(icons, eq(skill_icons.icon_id, icons.id))
         .orderBy(desc(skills.createdAt));
 
-    return mapSkills(rows);
+    const result = mapSkills(rows);
+    await setCache(cacheKey, result);
+    return result;
 }
-
 /* ---------------------------- GET SKILL BY ID ---------------------------- */
 export async function getSkillByIdRepository(id: string) {
+    const cacheKey = `skills:${id}`;
+    const cached = await getCache<SkillWithIcons>(cacheKey);
+    if (cached) return cached;
     const rows = await db
         .select({
             skillId: skills.id,
@@ -187,5 +207,7 @@ export async function getSkillByIdRepository(id: string) {
         .leftJoin(icons, eq(skill_icons.icon_id, icons.id))
         .where(eq(skills.id, id));
 
-    return rows.length ? mapSkills(rows)[0] : undefined;
+    const result = rows.length ? mapSkills(rows)[0] : undefined;
+    if (result) await setCache(cacheKey, result);
+    return result;
 }
