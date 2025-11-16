@@ -13,6 +13,10 @@
 		{ key: 'email', label: 'Email' },
 		{ key: 'role', label: 'Role' },
 		{ key: 'token', label: 'Token API' },
+		{ key: 'accessToken', label: 'Access Token API' },
+		{ key: 'refreshToken', label: 'Refresh Token API' },
+		{ key: 'refreshTokenExpiresAt', label: 'Expired Refresh Token API' },
+		{ key: 'expiresAt', label: 'Expired Token API' },
 		{ key: 'updatedAt', label: 'Updated At' },
 		{ key: 'createdAt', label: 'Created At' }
 	];

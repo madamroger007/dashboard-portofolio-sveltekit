@@ -139,7 +139,7 @@
 							<TableRow>
 								{#each columns as col}
 									<TableCell class="max-w-[180px] px-2 py-1 align-top">
-										<span class="block break-words whitespace-normal" title={row[col.key]}>
+										<span class="block truncate whitespace-normal ..." title={row[col.key]}>
 											{@html parseContent(row[col.key])}
 										</span>
 									</TableCell>

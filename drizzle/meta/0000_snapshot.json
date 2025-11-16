@@ -1,5 +1,5 @@
 {
-  "id": "79b6fa21-e0fe-4b05-83df-a7832f72b0dc",
+  "id": "e62f7640-367a-413b-bd33-e0c5fa87a033",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -65,9 +65,33 @@
           "primaryKey": false,
           "notNull": true
         },
+        "access_token": {
+          "name": "access_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "refresh_token": {
+          "name": "refresh_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "users_id": {
           "name": "users_id",
           "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "refresh_expires_at": {
+          "name": "refresh_expires_at",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true
         },
@@ -98,7 +122,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -109,6 +133,20 @@
           "nullsNotDistinct": false,
           "columns": [
             "token"
+          ]
+        },
+        "token_users_access_token_unique": {
+          "name": "token_users_access_token_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "access_token"
+          ]
+        },
+        "token_users_refresh_token_unique": {
+          "name": "token_users_refresh_token_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "refresh_token"
           ]
         }
       },

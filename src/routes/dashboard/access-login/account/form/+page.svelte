@@ -34,34 +34,86 @@
 
 	{#if isEdit}
 		<div class="grid grid-rows-2 justify-end gap-5 md:flex">
-			<InputGroup.Root class="mb-5">
-				<InputGroup.Input
-					type="password"
-					value={tokens?.token}
-					readonly
-					class="text-muted-foreground"
-				/>
-				<InputGroup.Addon align="inline-end">
-					<InputGroup.Button
-						aria-label="Copy"
-						title="Copy"
-						size="icon-xs"
-						onclick={() => copy(tokens?.token)}
-					>
-						{#if $copied}
-							<CheckIcon class="text-green-500 transition-all duration-200" />
-						{:else}
-							<CopyIcon class="text-muted-foreground transition-all duration-200" />
-						{/if}
-					</InputGroup.Button>
-				</InputGroup.Addon>
-			</InputGroup.Root>
+			<div class="grid w-full grid-rows-2">
+				<InputGroup.Root class="mb-5">
+					<label for="token" class="m-2 text-sm text-muted-foreground">Token</label>
+					<InputGroup.Input
+						type="password"
+						value={tokens?.token}
+						readonly
+						class="text-muted-foreground"
+					/>
+					<InputGroup.Addon align="inline-end">
+						<InputGroup.Button
+							aria-label="Copy"
+							title="Copy"
+							size="icon-xs"
+							onclick={() => copy(tokens?.token)}
+						>
+							{#if $copied}
+								<CheckIcon class="text-green-500 transition-all duration-200" />
+							{:else}
+								<CopyIcon class="text-muted-foreground transition-all duration-200" />
+							{/if}
+						</InputGroup.Button>
+					</InputGroup.Addon>
+				</InputGroup.Root>
+
+				<InputGroup.Root class="mb-5">
+					<label for="token" class="m-2 text-sm text-muted-foreground">Access Token</label>
+					<InputGroup.Input
+						type="password"
+						value={tokens?.accessToken}
+						readonly
+						class="text-muted-foreground"
+					/>
+					<InputGroup.Addon align="inline-end">
+						<InputGroup.Button
+							aria-label="Copy"
+							title="Copy"
+							size="icon-xs"
+							onclick={() => copy(tokens?.accessToken)}
+						>
+							{#if $copied}
+								<CheckIcon class="text-green-500 transition-all duration-200" />
+							{:else}
+								<CopyIcon class="text-muted-foreground transition-all duration-200" />
+							{/if}
+						</InputGroup.Button>
+					</InputGroup.Addon>
+				</InputGroup.Root>
+
+				<InputGroup.Root class="mb-5">
+					<label for="token" class="m-2 text-sm text-muted-foreground">Refresh Token</label>
+					<InputGroup.Input
+						type="password"
+						value={tokens?.refreshToken}
+						readonly
+						class="text-muted-foreground"
+					/>
+					<InputGroup.Addon align="inline-end">
+						<InputGroup.Button
+							aria-label="Copy"
+							title="Copy"
+							size="icon-xs"
+							onclick={() => copy(tokens?.refreshToken)}
+						>
+							{#if $copied}
+								<CheckIcon class="text-green-500 transition-all duration-200" />
+							{:else}
+								<CopyIcon class="text-muted-foreground transition-all duration-200" />
+							{/if}
+						</InputGroup.Button>
+					</InputGroup.Addon>
+				</InputGroup.Root>
+			</div>
+
 			<div class="mb-5 flex gap-5">
 				<form method="post" on:submit={(e) => handleSubmit(e, 'create')}>
 					<input type="hidden" name="id" value={account.id} />
 					<LoadingButton
 						type="submit"
-						formaction="?/create_token"
+						formaction="?/createToken"
 						loading={loadingCreate}
 						loadingText="Creating..."
 						text="New Token API"
@@ -72,7 +124,7 @@
 					<input type="hidden" name="id" value={account.id} />
 					<LoadingButton
 						type="submit"
-						formaction="?/update_token"
+						formaction="?/updateToken"
 						loading={loadingUpdate}
 						loadingText="Updating..."
 						text="Update Token API"

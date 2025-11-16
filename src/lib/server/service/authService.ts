@@ -2,9 +2,9 @@ import { hash, verify } from '@node-rs/argon2';
 import { fail, type RequestEvent } from '@sveltejs/kit';
 import * as auth from '$lib/server/auth';
 import generateId from '$lib/utils/generateId';
-import { createUserRepository, deleteUserRepository, updateUserRepository, getUserByUsernameRepository, getUserByIdRepository, getUserAllRepository, addTokenUsersRepository, getTokenUsersByUserIdRepository, updateTokenUsersRepository, getTokenUsersByTokenRepository } from '../repositories/userRepository';
+import { createUserRepository, deleteUserRepository, updateUserRepository, getUserByUsernameRepository, getUserByIdRepository, getUserAllRepository} from '../repositories/userRepository';
 import { type User } from '$lib/server/db/schemaAuth';
-import crypto from "crypto";
+
 
 export async function getAllUsersService() {
     try {
@@ -139,65 +139,6 @@ export async function updateAccountService(
     }
 }
 
-export async function createTokenService(event: RequestEvent, id: string) {
-    try {
-        const checkUser = await getTokenUsersByUserIdRepository(id);
-        if (checkUser) {
-            return fail(400, { message: 'Token limit reached. You can only create up to 1 tokens.' });
-        }
-
-        const { hashedToken } = await generateUniqueSecureToken();
-
-        await addTokenUsersRepository({
-            id: generateId(),
-            userId: id,
-            token: hashedToken,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        });
-        return {
-            success: true,
-            status: 200,
-            message: 'Token created successfully'
-        };
-    }
-    catch (error) {
-        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
-    }
-}
-
-export async function updateTokenService(event: RequestEvent, id: string) {
-    try {
-        const { hashedToken } = await generateUniqueSecureToken();
-
-        await updateTokenUsersRepository(id, {
-            token: hashedToken,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        });
-
-        return {
-            success: true,
-            status: 200,
-            message: 'Token updated successfully',
-        };
-    } catch (error) {
-        return fail(500, {
-            message: error instanceof Error ? error.message : 'An error occurred'
-        });
-    }
-}
-
-export async function getTokenByUserIdService(id: string) {
-    try {
-        const token = await getTokenUsersByUserIdRepository(id);
-        return token;
-    } catch (error) {
-        return fail(500, { message: error instanceof Error ? error.message : 'An error occurred' });
-    }
-}
-
-
 function validateUsername(username: unknown): username is string {
     return (
         typeof username === 'string' &&
@@ -212,25 +153,3 @@ function validatePassword(password: unknown): password is string {
 }
 
 
-async function generateUniqueSecureToken(): Promise<{
-    apiToken: string;
-    hashedToken: string;
-}> {
-    let apiToken: string;
-    let hashedToken: string;
-    let existingToken: any;
-
-    do {
-        apiToken = auth.generateApiToken();
-
-        const digest = await crypto.subtle.digest(
-            'SHA-256',
-            new TextEncoder().encode(apiToken)
-        );
-        hashedToken = Buffer.from(digest).toString('base64url');
-
-        existingToken = await getTokenUsersByTokenRepository(hashedToken);
-    } while (existingToken);
-
-    return { apiToken, hashedToken };
-}

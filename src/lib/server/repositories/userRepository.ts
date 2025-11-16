@@ -3,7 +3,7 @@ import { users, type User, session, token_users, type TokenUser } from '$lib/ser
 import { eq } from 'drizzle-orm';
 import { getCache, setCache, delCache } from '$lib/server/repositories/redisRepository';
 
-async function invalidateUserCache(userId?: string, username?: string) {
+export async function invalidateUserCache(userId?: string, username?: string) {
   const jobs: Promise<void>[] = [];
 
   // Cache per-user dan token
@@ -22,10 +22,6 @@ async function invalidateUserCache(userId?: string, username?: string) {
 
   await Promise.all(jobs);
 }
-
-/* =====================================================
- * ================ USER CRUD OPERATIONS ================
- * ===================================================== */
 
 /** CREATE */
 export async function createUserRepository(data: User) {
@@ -48,6 +44,10 @@ export async function getUserAllRepository() {
       createdAt: users.createdAt,
       updatedAt: users.updatedAt,
       token: token_users.token,
+      expiresAt: token_users.expiresAt,
+      accessToken: token_users.accessToken,
+      refreshToken: token_users.refreshToken,
+      refreshTokenExpiresAt: token_users.refreshExpiresAt,
       tokenId: token_users.id,
       tokenCreatedAt: token_users.createdAt,
     })
@@ -97,46 +97,3 @@ export async function deleteUserRepository(id: string): Promise<void> {
   await invalidateUserCache(id);
 }
 
-/* =====================================================
- * =============== TOKEN MANAGEMENT ====================
- * ===================================================== */
-
-/** ADD TOKEN USER */
-export async function addTokenUsersRepository(data: TokenUser): Promise<void> {
-  await db.insert(token_users).values(data);
-  await invalidateUserCache(data.userId);
-}
-
-/** GET TOKEN BY USER ID */
-export async function getTokenUsersByUserIdRepository(userId: string) {
-  const cacheKey = `token:user:${userId}`;
-  const cached = await getCache<any>(cacheKey);
-  if (cached) return cached;
-
-  const result = await db.query.token_users.findFirst({
-    where: eq(token_users.userId, userId),
-  });
-
-  if (result) await setCache(cacheKey, result);
-  return result;
-}
-
-/** GET TOKEN BY TOKEN VALUE */
-export async function getTokenUsersByTokenRepository(token: string) {
-  const cacheKey = `token:${token}`;
-  const cached = await getCache<any>(cacheKey);
-  if (cached) return cached;
-
-  const result = await db.query.token_users.findFirst({
-    where: eq(token_users.token, token),
-  });
-
-  if (result) await setCache(cacheKey, result);
-  return result;
-}
-
-/** UPDATE TOKEN */
-export async function updateTokenUsersRepository(id: string, data: Partial<TokenUser>): Promise<void> {
-  await db.update(token_users).set(data).where(eq(token_users.userId, id));
-  await invalidateUserCache(id);
-}

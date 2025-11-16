@@ -7,10 +7,16 @@ CREATE TABLE "session" (
 CREATE TABLE "token_users" (
 	"id" text PRIMARY KEY NOT NULL,
 	"token" text NOT NULL,
+	"access_token" text NOT NULL,
+	"refresh_token" text NOT NULL,
 	"users_id" text NOT NULL,
+	"expires_at" timestamp with time zone NOT NULL,
+	"refresh_expires_at" timestamp with time zone NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
-	CONSTRAINT "token_users_token_unique" UNIQUE("token")
+	CONSTRAINT "token_users_token_unique" UNIQUE("token"),
+	CONSTRAINT "token_users_access_token_unique" UNIQUE("access_token"),
+	CONSTRAINT "token_users_refresh_token_unique" UNIQUE("refresh_token")
 );
 --> statement-breakpoint
 CREATE TABLE "users" (
@@ -109,7 +115,7 @@ CREATE TABLE "skill" (
 );
 --> statement-breakpoint
 ALTER TABLE "session" ADD CONSTRAINT "session_users_id_users_id_fk" FOREIGN KEY ("users_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "token_users" ADD CONSTRAINT "token_users_users_id_users_id_fk" FOREIGN KEY ("users_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "token_users" ADD CONSTRAINT "token_users_users_id_users_id_fk" FOREIGN KEY ("users_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "experience" ADD CONSTRAINT "experience_category_id_category_experience_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."category_experience"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "project_icons" ADD CONSTRAINT "project_icons_project_id_project_id_fk" FOREIGN KEY ("project_id") REFERENCES "public"."project"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "project_icons" ADD CONSTRAINT "project_icons_icon_id_icons_id_fk" FOREIGN KEY ("icon_id") REFERENCES "public"."icons"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint

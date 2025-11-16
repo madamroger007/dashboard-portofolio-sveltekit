@@ -23,9 +23,13 @@ export const session = pgTable('session', {
 export const token_users = pgTable('token_users', {
 	id: text('id').primaryKey(),
 	token: text('token').notNull().unique(),
+	accessToken: text('access_token').notNull().unique(),
+	refreshToken: text('refresh_token').notNull().unique(),
 	userId: text('users_id')
 		.notNull()
-		.references(() => users.id),
+		.references(() => users.id, { onDelete: 'cascade' }),
+	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull(),
+	refreshExpiresAt: timestamp('refresh_expires_at', { withTimezone: true, mode: 'date' }).notNull(),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' })
 		.notNull()

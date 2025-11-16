@@ -1,42 +1,23 @@
-import jwt, { type JwtPayload } from 'jsonwebtoken';
 import { error } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
+import { verifyAccessToken, refreshAccessTokenService } from '$lib/server/service/tokenService';
 
-/**
- * Middleware proteksi JWT untuk API route.
- * Gunakan di +server.ts seperti:
- * const payload = await jwtProtect(event.request);
- */
-export async function jwtProtect(request: Request): Promise<JwtPayload> {
-	const authHeader = request.headers.get('authorization');
+export async function jwtProtect(request: Request) {
+  const app_token = request.headers.get('x-app-token');
 
-	// 1️⃣ Cek apakah header ada dan valid
-	if (!authHeader || !authHeader.startsWith('Bearer ')) {
-		throw error(401, 'Unauthorized: Missing or invalid Authorization header');
-	}
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ') || !app_token || app_token !== process.env.APP_API_TOKEN) {
+    throw error(401, 'Unauthorized: Missing or invalid Authorization header');
+  }
 
-	// 2️⃣ Ambil token setelah "Bearer "
-	const token = authHeader.split(' ')[1];
 
-	// 3️⃣ Pastikan secret tersedia
-	const JWT_SECRET = env.JWT_SECRET;
-	if (!JWT_SECRET) {
-		console.error('JWT_SECRET is missing in environment variables');
-		throw error(500, 'Server misconfiguration');
-	}
+  const accessToken = authHeader.split(' ')[1];
 
-	try {
-		// 4️⃣ Verifikasi token
-		const decoded = jwt.verify(token, JWT_SECRET);
+  try {
+    const payload = await verifyAccessToken(accessToken);
+    if (!payload || !payload.sub) throw error(403, 'Invalid token payload');
 
-		// 5️⃣ Pastikan payload berbentuk objek
-		if (typeof decoded !== 'object' || decoded === null) {
-			throw error(403, 'Forbidden: Invalid token payload');
-		}
-
-		return decoded as JwtPayload;
-	} catch (err) {
-		console.error('JWT invalid:', err);
-		throw error(403, 'Forbidden: Invalid or expired token');
-	}
+    return { payload };
+  } catch (err: any) {
+    throw error(403, 'Invalid token');
+  }
 }
